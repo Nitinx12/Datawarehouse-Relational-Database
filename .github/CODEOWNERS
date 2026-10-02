@@ -1,6 +1,0 @@
-# Code owners per arch 8 branch protection.
-* @Nitinx12
-/db/migrations/ @Nitinx12
-/api-service/openapi.yaml @Nitinx12
-/deploy/ @Nitinx12
-/.github/ @Nitinx12

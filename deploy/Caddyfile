@@ -1,9 +1,0 @@
-# Caddy reverse proxy for single VPS topology B.
-lrdb.example.com {
-    reverse_proxy dashboard:8501
-    reverse_proxy /api/* api-service:8080
-    encode gzip
-    header {
-        Strict-Transport-Security "max-age=31536000;"
-    }
-}

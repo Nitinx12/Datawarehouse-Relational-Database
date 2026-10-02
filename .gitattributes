@@ -1,5 +1,0 @@
-# Git attributes for line endings and diff.
-* text=auto eol=lf
-*.java diff=java
-*.scala diff=scala
-*.py diff=python

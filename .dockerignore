@@ -1,7 +1,0 @@
-# Docker ignore for build context.
-.git
-.venv
-target
-__pycache__
-*.log
-.env
