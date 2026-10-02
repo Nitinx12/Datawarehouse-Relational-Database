@@ -1,11 +1,9 @@
 -- ===========================================================================
 -- Procedure : warehouse.load_dim_customers
--- Purpose   : SCD1 customer dimension from staging.cust_info (master),
---             staging.cust_az12 (demographics) and staging.loc_a101
---             (geography), keyed on the dash-free customer key.
---             New keys are inserted, changed attributes updated in place,
---             unchanged rows untouched. Demographics-only keys outside
---             cust_info are kept with NULL master attributes.
+-- Purpose   : SCD1 customer dimension following team grain and rules:
+--             cust_info master with LEFT JOINs to demographics and
+--             geography, CRM gender first with ERP fallback.
+--             Stable surrogate kept for incremental merge.
 -- Deploy    : psql -U postgres -d datawarehouse -f src/jobs/proc_warehouse_dim_customers.sql
 -- Run       : CALL warehouse.load_dim_customers();
 -- ===========================================================================
@@ -23,9 +21,10 @@ CREATE TABLE IF NOT EXISTS warehouse.dim_customers (
     birthdate DATE,
     country TEXT,
     create_date DATE,
-    source_system TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE warehouse.dim_customers DROP COLUMN IF EXISTS source_system;
 
 CREATE OR REPLACE PROCEDURE warehouse.load_dim_customers()
 LANGUAGE plpgsql
@@ -36,37 +35,28 @@ DECLARE
     v_updated BIGINT := 0;
 BEGIN
     -- =======================================================================
-    -- Combine the three staging sources, demographics winning on gender.
+    -- Combine master with demographics and geography, CRM gender first.
     -- =======================================================================
     CREATE TEMP TABLE new_rows ON COMMIT DROP AS
     WITH combined AS (
         SELECT
-            COALESCE(info.cst_key, demo.cid, geo.cid) AS customer_key,
+            info.cst_key AS customer_key,
             info.cst_id,
             info.cst_first_name AS first_name,
             info.cst_last_name AS last_name,
             info.cst_marital_status AS marital_status,
-            COALESCE(
-                NULLIF(info.cst_gndr, 'n/a'),
-                NULLIF(demo.gender, 'n/a'),
-                'n/a'
-            ) AS gender,
-            demo.birthdate,
-            COALESCE(geo.cntry, 'n/a') AS country,
-            info.create_date AS create_date,
             CASE
-                WHEN info.cst_key IS NOT NULL
-                    AND (demo.cid IS NOT NULL OR geo.cid IS NOT NULL)
-                    THEN 'multiple'
-                WHEN info.cst_key IS NOT NULL THEN 'cust_info'
-                WHEN demo.cid IS NOT NULL THEN 'cust_az12'
-                ELSE 'loc_a101'
-            END AS source_system
+                WHEN info.cst_gndr != 'n/a' THEN info.cst_gndr
+                ELSE COALESCE(demo.gender, 'n/a')
+            END AS gender,
+            demo.birthdate,
+            geo.cntry AS country,
+            info.create_date AS create_date
         FROM staging.cust_info AS info
-        FULL OUTER JOIN staging.cust_az12 AS demo
+        LEFT JOIN staging.cust_az12 AS demo
             ON demo.cid = info.cst_key
-        FULL OUTER JOIN staging.loc_a101 AS geo
-            ON geo.cid = COALESCE(info.cst_key, demo.cid)
+        LEFT JOIN staging.loc_a101 AS geo
+            ON geo.cid = info.cst_key
     )
 
     SELECT
@@ -78,8 +68,7 @@ BEGIN
         combined.gender,
         combined.birthdate,
         combined.country,
-        combined.create_date,
-        combined.source_system
+        combined.create_date
     FROM combined
     WHERE combined.customer_key IS NOT NULL;
 
@@ -98,8 +87,7 @@ BEGIN
             gender,
             birthdate,
             country,
-            create_date,
-            source_system
+            create_date
         )
         SELECT
             customer_key,
@@ -110,8 +98,7 @@ BEGIN
             gender,
             birthdate,
             country,
-            create_date,
-            source_system
+            create_date
         FROM new_rows
         ON CONFLICT (customer_key) DO UPDATE SET
             cst_id = EXCLUDED.cst_id,
@@ -122,7 +109,6 @@ BEGIN
             birthdate = EXCLUDED.birthdate,
             country = EXCLUDED.country,
             create_date = EXCLUDED.create_date,
-            source_system = EXCLUDED.source_system,
             updated_at = NOW()
         WHERE warehouse.dim_customers.cst_id IS DISTINCT FROM EXCLUDED.cst_id
             OR warehouse.dim_customers.first_name IS DISTINCT FROM EXCLUDED.first_name
@@ -132,7 +118,6 @@ BEGIN
             OR warehouse.dim_customers.birthdate IS DISTINCT FROM EXCLUDED.birthdate
             OR warehouse.dim_customers.country IS DISTINCT FROM EXCLUDED.country
             OR warehouse.dim_customers.create_date IS DISTINCT FROM EXCLUDED.create_date
-            OR warehouse.dim_customers.source_system IS DISTINCT FROM EXCLUDED.source_system
         RETURNING (xmax = 0) AS inserted
     )
 
