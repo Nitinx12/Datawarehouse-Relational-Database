@@ -1,17 +1,174 @@
+# ==========================
 # Python
+# ==========================
 __pycache__/
 *.py[cod]
-*.egg-info/
+*$py.class
+*.so
 .pytest_cache/
+.mypy_cache/
 .ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.pyre/
 
-# uv / venv
+# ==========================
+# Virtual Environments
+# ==========================
 .venv/
-uv.lock
+venv/
+env/
+ENV/
+.venv_old
+
+# ==========================
+# Environment Variables
+# ==========================
+.env
+.env.*
+!.env.example
+
+# ==========================
+# IDE / Editors
+# ==========================
+.vscode/
+.idea/
+*.code-workspace
+
+# ==========================
+# Jupyter Notebook
+# ==========================
+.ipynb_checkpoints/
+
+# ==========================
+# Logs
+# ==========================
+logs/
+*.log
+
+# ==========================
+# Temporary Files
+# ==========================
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# ==========================
+# Build / Distribution
+# ==========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ==========================
+# Database Files
+# ==========================
+*.db
+*.sqlite
+*.sqlite3
+*.duckdb
+
+# ==========================
+# ETL Outputs
+# ==========================
+output/
+exports/
+artifacts/
+
+# Generated datasets
+processed_data/
+cleaned_data/
+intermediate/
+
+# ==========================
+# Data Files (Optional)
+# Uncomment if data is too large
+# ==========================
+# data/raw/
+# data/processed/
+# *.csv
+# *.parquet
+# *.json
+# *.xlsx
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Testing
+# ==========================
+.pytest_cache/
+.tox/
+.nox/
+
+# ==========================
+# uv
+# ==========================
 .python-version
 
-# Env / secrets - keep local only
-.env
+# ==========================
+# Airflow
+# ==========================
+airflow.db
+airflow-webserver.pid
+logs/
+dags/__pycache__/
 
-# Data / outputs (large CSVs already in repo - uncomment if you want to ignore)
-# source_crm/*.csv
+# ==========================
+# dbt
+# ==========================
+target/
+dbt_packages/
+logs/
+
+# ==========================
+# Terraform (if used)
+# ==========================
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# ==========================
+# Docker
+# ==========================
+*.pid
+
+# ==========================
+# Keep Empty Directories
+# ==========================
+!logs/.gitkeep
+!output/.gitkeep
+!exports/.gitkeep
+# NOTE: bare __init__.py is ignored to keep namespace packages lean,
+# but explicit package __init__.py under scripts/python and utils are
+# required for `import scripts.python.*` and `import utils.*` to work
+# on editable installs — re-allow those specific paths.
+__init__.py
+!scripts/__init__.py
+!scripts/python/__init__.py
+!utils/__init__.py
+.qwen/
+# ==========================
+# Generated Reports / Assets (do not version generated charts)
+# ==========================
+reports/asset/pipeline.mp4
+reports/charts/
+
+gx/uncommitted/
+gx/expectations/
+
+link/
+
+.claude/settings.local.json
+
+# Great Expectations generated files
+/gx/checkpoints/
+/gx/validation_definitions/
