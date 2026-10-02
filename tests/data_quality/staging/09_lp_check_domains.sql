@@ -22,7 +22,7 @@ BEGIN
             ('cust_az12', 'gender', ARRAY['Male', 'Female', 'n/a']),
             ('cust_info', 'cst_marital_status', ARRAY['Single', 'Married', 'n/a']),
             ('cust_info', 'cst_gndr', ARRAY['Female', 'Male', 'n/a']),
-            ('prd_info', 'prd_line', ARRAY['Mountain', 'Road', 'Standard', 'Touring', 'n/a'])
+            ('prd_info', 'prd_line', ARRAY['Mountain', 'Road', 'Other Sales', 'Touring', 'n/a'])
         ) AS rules(table_name, column_name, allowed)
     LOOP
 

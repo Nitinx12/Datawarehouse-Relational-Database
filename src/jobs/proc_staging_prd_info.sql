@@ -1,9 +1,10 @@
 -- ===========================================================================
 -- Procedure : staging.load_prd_info
 -- Purpose   : Incremental staging load for prd_info.
---             Merges only rows whose (prd_id, prd_key, _loaded_at) triple
---             is not already staged. NULL prd_id rows cannot be merged and
---             are counted separately.
+--             Splits the source key into cat_id plus remainder prd_key,
+--             zeroes unparseable costs, decodes the product line, then
+--             merges rows whose (prd_id, prd_key, _loaded_at) triple is
+--             not already staged.
 -- Deploy    : psql -U postgres -d datawarehouse -f src/jobs/proc_staging_prd_info.sql
 -- Run       : CALL staging.load_prd_info();
 -- ===========================================================================
@@ -12,6 +13,7 @@ CREATE SCHEMA IF NOT EXISTS staging;
 
 CREATE TABLE IF NOT EXISTS staging.prd_info (
     prd_id TEXT,
+    cat_id TEXT,
     prd_key TEXT,
     prd_nm TEXT,
     prd_cost NUMERIC,
@@ -21,6 +23,8 @@ CREATE TABLE IF NOT EXISTS staging.prd_info (
     updated_at TIMESTAMP,
     loaded_at TIMESTAMP
 );
+
+ALTER TABLE staging.prd_info ADD COLUMN IF NOT EXISTS cat_id TEXT;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_staging_prd_info_prd_id
     ON staging.prd_info (prd_id);
@@ -35,23 +39,27 @@ DECLARE
     v_null_keys BIGINT := 0;
 BEGIN
     -- =======================================================================
-    -- Collect the cleaned batch: trim names, decode the product line,
-    -- keep only numeric costs, then apply the incremental filter.
+    -- Collect the cleaned batch: split the key, decode the product line,
+    -- zero bad costs, then apply the incremental filter.
     -- =======================================================================
     CREATE TEMP TABLE new_rows ON COMMIT DROP AS
     WITH cleaned AS (
         SELECT
             prd_id,
-            TRIM(prd_key) AS prd_key,
+            REPLACE(SUBSTRING(prd_key FROM 1 FOR 5), '-', '_') AS cat_id,
+            SUBSTRING(prd_key FROM 7) AS prd_key,
             TRIM(prd_nm) AS prd_nm,
-            CASE
-                WHEN TRIM(prd_cost) ~ '^[0-9]+(\.[0-9]+)?$' THEN TRIM(prd_cost) :: NUMERIC
-                ELSE NULL
-            END AS prd_cost,
+            COALESCE(
+                CASE
+                    WHEN TRIM(prd_cost) ~ '^[0-9]+(\.[0-9]+)?$' THEN TRIM(prd_cost) :: NUMERIC
+                    ELSE NULL
+                END,
+                0
+            ) AS prd_cost,
             CASE
                 WHEN TRIM(prd_line) = 'M' THEN 'Mountain'
                 WHEN TRIM(prd_line) = 'R' THEN 'Road'
-                WHEN TRIM(prd_line) = 'S' THEN 'Standard'
+                WHEN TRIM(prd_line) = 'S' THEN 'Other Sales'
                 WHEN TRIM(prd_line) = 'T' THEN 'Touring'
                 ELSE 'n/a'
             END AS prd_line,
@@ -84,6 +92,7 @@ BEGIN
 
     SELECT
         cleaned.prd_id,
+        cleaned.cat_id,
         cleaned.prd_key,
         cleaned.prd_nm,
         cleaned.prd_cost,
@@ -115,6 +124,7 @@ BEGIN
     WITH upsert AS (
         INSERT INTO staging.prd_info (
             prd_id,
+            cat_id,
             prd_key,
             prd_nm,
             prd_cost,
@@ -126,6 +136,7 @@ BEGIN
         )
         SELECT
             prd_id,
+            cat_id,
             prd_key,
             prd_nm,
             prd_cost,
@@ -136,6 +147,7 @@ BEGIN
             loaded_at
         FROM new_rows
         ON CONFLICT (prd_id) DO UPDATE SET
+            cat_id = EXCLUDED.cat_id,
             prd_key = EXCLUDED.prd_key,
             prd_nm = EXCLUDED.prd_nm,
             prd_cost = EXCLUDED.prd_cost,

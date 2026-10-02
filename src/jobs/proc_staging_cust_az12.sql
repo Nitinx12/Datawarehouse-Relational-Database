@@ -37,7 +37,14 @@ BEGIN
     CREATE TEMP TABLE new_rows ON COMMIT DROP AS
     WITH validated AS (
         SELECT
-            UPPER(TRIM(REPLACE("CID", '-', ''))) AS cid,
+            UPPER(TRIM(REPLACE(
+                CASE
+                    WHEN "CID" LIKE 'NAS%' THEN SUBSTRING("CID" FROM 4)
+                    ELSE "CID"
+                END,
+                '-',
+                ''
+            ))) AS cid,
             CASE
                 WHEN "BDATE" ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
                     AND SUBSTRING("BDATE" FROM 6 FOR 2) :: INT BETWEEN 1 AND 12
@@ -76,7 +83,14 @@ BEGIN
                 updated_at,
                 _loaded_at,
                 ROW_NUMBER() OVER (
-                    PARTITION BY UPPER(TRIM(REPLACE("CID", '-', '')))
+                    PARTITION BY UPPER(TRIM(REPLACE(
+                        CASE
+                            WHEN "CID" LIKE 'NAS%' THEN SUBSTRING("CID" FROM 4)
+                            ELSE "CID"
+                        END,
+                        '-',
+                        ''
+                    )))
                     ORDER BY
                         updated_at,
                         _loaded_at

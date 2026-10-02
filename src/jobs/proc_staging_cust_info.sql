@@ -71,9 +71,9 @@ BEGIN
                 ROW_NUMBER() OVER (
                     PARTITION BY cst_id
                     ORDER BY
-                        cst_create_date,
-                        updated_at,
-                        _loaded_at
+                        cst_create_date DESC,
+                        updated_at DESC,
+                        _loaded_at DESC
                 ) AS rnk
             FROM source.cust_info
         ) AS ranked
