@@ -35,7 +35,7 @@ BEGIN
     -- decoded gender, then the incremental filter.
     -- =======================================================================
     CREATE TEMP TABLE new_rows ON COMMIT DROP AS
-    WITH cleaned AS (
+    WITH validated AS (
         SELECT
             UPPER(TRIM(REPLACE("CID", '-', ''))) AS cid,
             CASE
@@ -84,6 +84,19 @@ BEGIN
             FROM source."CUST_AZ12"
         ) AS ranked
         WHERE ranked.rnk = 1
+    ),
+
+    cleaned AS (
+        SELECT
+            validated.cid,
+            CASE
+                WHEN validated.birthdate > CURRENT_DATE THEN NULL
+                ELSE validated.birthdate
+            END AS birthdate,
+            validated.gender,
+            validated.updated_at,
+            validated.loaded_at
+        FROM validated
     )
 
     SELECT

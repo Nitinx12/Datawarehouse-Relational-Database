@@ -23,5 +23,5 @@ COMMENT ON SCHEMA source    IS 'Raw source-system landing layer. Minimal transfo
 COMMENT ON SCHEMA staging   IS 'Data cleansing, standardization, validation and intermediate transformations.';
 COMMENT ON SCHEMA warehouse IS 'Production business warehouse containing dimensions and fact tables.';
 COMMENT ON SCHEMA analytics IS 'Reporting, analytical marts, KPIs and BI-facing objects.';
- 
+
 COMMIT;

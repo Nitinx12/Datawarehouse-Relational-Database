@@ -1,0 +1,8 @@
+[sqlfluff]
+dialect = postgres
+max_line_length = 120
+exclude_rules = LT01,LT02,LT09,RF04
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+line_position = trailing

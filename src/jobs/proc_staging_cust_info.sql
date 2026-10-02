@@ -42,8 +42,8 @@ BEGIN
         SELECT
             cst_id,
             cst_key,
-            TRIM(cst_firstname) AS cst_first_name,
-            TRIM(cst_lastname) AS cst_last_name,
+            COALESCE(NULLIF(TRIM(cst_firstname), ''), 'Unknown') AS cst_first_name,
+            COALESCE(NULLIF(TRIM(cst_lastname), ''), 'Unknown') AS cst_last_name,
             CASE
                 WHEN UPPER(TRIM(cst_marital_status)) = 'S' THEN 'Single'
                 WHEN UPPER(TRIM(cst_marital_status)) = 'M' THEN 'Married'
