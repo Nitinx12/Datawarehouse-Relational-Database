@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# uv / venv
+.venv/
+uv.lock
+.python-version
+
+# Env / secrets - keep local only
+.env
+
+# Data / outputs (large CSVs already in repo - uncomment if you want to ignore)
+# source_crm/*.csv
