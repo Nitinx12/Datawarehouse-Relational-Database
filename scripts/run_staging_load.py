@@ -61,8 +61,9 @@ def parse_notice(notice: str) -> dict:
 
 
 # calls one procedure and returns its result row
-def call_procedure(procedure: str) -> dict:
+def call_procedure(procedure: str, source: str = "run_staging_load") -> dict:
     started = time.time()
+    runner_log = get_logger(source)
     result = {"name": procedure, "status": "SUCCESS", "error": None}
     result.update({"staged": 0, "inserted": 0, "updated": 0, "skipped": 0})
     conn = get_postgres_connection()
@@ -72,13 +73,15 @@ def call_procedure(procedure: str) -> dict:
         conn.add_notice_handler(lambda diag: notices.append(diag.message_primary))
         conn.execute(f"CALL {procedure}()")
         for notice in notices:
-            logger.info("%s", notice)
+            runner_log.info("%s", notice)
         if notices:
             result.update(parse_notice(notices[-1]))
     except Exception as exc:  # noqa: BLE001
         result["status"] = "FAILED"
         result["error"] = str(exc).strip().splitlines()[0][:200]
-        logger.error("procedure failed name=%s error=%s", procedure, result["error"])
+        runner_log.error(
+            "procedure failed name=%s error=%s", procedure, result["error"]
+        )
     finally:
         conn.close()
         result["seconds"] = round(time.time() - started, 1)
@@ -86,8 +89,10 @@ def call_procedure(procedure: str) -> dict:
 
 
 # renders the end-of-run summary table
-def print_summary(results: list[dict], elapsed: float) -> None:
-    table = Table(title="Staging load summary")
+def print_summary(
+    results: list[dict], elapsed: float, title: str = "Staging load summary"
+) -> None:
+    table = Table(title=title)
     table.add_column("Procedure", style="cyan")
     table.add_column("Staged", justify="right")
     table.add_column("Inserted", justify="right", style="green")
