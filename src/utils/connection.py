@@ -5,6 +5,7 @@ from databricks import sql as databricks_sql
 from databricks.sql.client import Connection as DatabricksConnection
 from dotenv import load_dotenv
 from psycopg import Connection as PostgresConnection
+from psycopg.conninfo import make_conninfo
 from pymongo import MongoClient
 from pymongo.database import Database
 
@@ -24,10 +25,14 @@ def get_postgres_dsn() -> str:
     password = os.getenv("POSTGRES_PASSWORD", "")
     if not dbname or not user:
         raise ConnectionError("POSTGRES_DB and POSTGRES_USER must be set")
-    dsn = f"host={host} port={port} dbname={dbname} user={user}"
-    if password:
-        dsn += f" password={password}"
-    return dsn
+    # make_conninfo quotes/escapes values, so passwords with spaces or quotes work
+    return make_conninfo(
+        host=host,
+        port=port,
+        dbname=dbname,
+        user=user,
+        password=password or None,
+    )
 
 
 # opens a new postgres connection
@@ -55,7 +60,11 @@ def get_mongo_url() -> str:
 # opens a mongo client and fails fast when unreachable
 def get_mongo_client() -> MongoClient:
     client: MongoClient = MongoClient(get_mongo_url(), serverSelectionTimeoutMS=5000)
-    client.admin.command("ping")
+    try:
+        client.admin.command("ping")
+    except Exception:
+        client.close()
+        raise
     logger.info("mongo connected db=%s", os.getenv("MONGO_DB", ""))
     return client
 

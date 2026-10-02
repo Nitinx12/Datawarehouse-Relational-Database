@@ -10,6 +10,17 @@ load_dotenv()
 
 logger = get_logger(__name__)
 
+# python level names -> names spark's setLogLevel accepts
+_SPARK_LEVELS = {"WARNING": "WARN", "CRITICAL": "FATAL"}
+_VALID_SPARK_LEVELS = {"ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN"}
+
+
+# resolves a spark-safe log level from SPARK_LOG_LEVEL or LOG_LEVEL
+def _spark_log_level() -> str:
+    raw = (os.getenv("SPARK_LOG_LEVEL") or os.getenv("LOG_LEVEL") or "WARN").upper()
+    level = _SPARK_LEVELS.get(raw, raw)
+    return level if level in _VALID_SPARK_LEVELS else "WARN"
+
 
 # returns a configured spark session, reusing the active one when present
 def get_spark_session(app_name: str = "lrdb", with_delta: bool = True) -> SparkSession:
@@ -36,7 +47,7 @@ def get_spark_session(app_name: str = "lrdb", with_delta: bool = True) -> SparkS
         )
         builder = configure_spark_with_delta_pip(builder)
     session = builder.getOrCreate()
-    session.sparkContext.setLogLevel(os.getenv("LOG_LEVEL", "INFO").upper())
+    session.sparkContext.setLogLevel(_spark_log_level())
     logger.info("spark connected app=%s master=%s", app_name, master or "existing")
     return session
 

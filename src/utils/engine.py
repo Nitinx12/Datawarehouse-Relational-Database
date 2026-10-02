@@ -83,6 +83,14 @@ def read_mongo(
             close_connection(active)
 
 
+# maps NaN/NaT/None to None, leaves list/dict style values untouched
+def _clean_value(value: Any) -> Any:
+    try:
+        return None if pd.isna(value) else value
+    except (TypeError, ValueError):
+        return value
+
+
 # writes a dataframe into postgres and returns the row count
 def write_postgres(
     frame: pd.DataFrame,
@@ -113,7 +121,7 @@ def write_postgres(
                 target, names, placeholders
             )
             rows = [
-                tuple(None if pd.isna(value) else value for value in row)
+                tuple(_clean_value(value) for value in row)
                 for row in frame.itertuples(index=False, name=None)
             ]
             cursor.executemany(insert, rows)
