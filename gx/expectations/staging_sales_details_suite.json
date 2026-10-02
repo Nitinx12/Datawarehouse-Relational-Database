@@ -1,0 +1,69 @@
+{
+  "expectations": [
+    {
+      "id": "dc8676b4-c587-46d8-90cb-4d05a662638b",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "00948d01-0067-465a-a308-5d901e052f3e",
+      "kwargs": {
+        "column_list": [
+          "sls_ord_num",
+          "sls_prd_key",
+          "sls_cust_id",
+          "sls_order_dt",
+          "sls_ship_dt",
+          "sls_due_dt",
+          "sls_sales",
+          "sls_quantity",
+          "sls_price",
+          "updated_at",
+          "loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "8e43a95c-80f6-43b2-b456-e9d099f346b5",
+      "kwargs": {
+        "column": "sls_ord_num"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d2666851-c3d9-4cd1-97de-6bec5a4e68d1",
+      "kwargs": {
+        "column": "sls_sales",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "945ddd97-ef83-442b-abbc-b1a2b0f1ef50",
+      "kwargs": {
+        "column": "sls_quantity",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "3b656401-0236-41e8-b198-ca534899bd3e",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "staging_sales_details_suite",
+  "notes": null
+}

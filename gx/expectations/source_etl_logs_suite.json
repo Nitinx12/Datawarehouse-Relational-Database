@@ -1,0 +1,51 @@
+{
+  "expectations": [
+    {
+      "id": "a026c2b5-58cf-4d9f-9a2b-3e721dd2c81b",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "f3efb620-6d6d-4ab2-906c-ebefbf0ad655",
+      "kwargs": {
+        "column_list": [
+          "id",
+          "job_name",
+          "collection_name",
+          "target_schema",
+          "target_table",
+          "mode",
+          "watermark_column",
+          "watermark_from",
+          "watermark_to",
+          "rows_extracted",
+          "rows_loaded",
+          "chunks",
+          "status",
+          "error_message",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "run_id",
+          "rows_inserted",
+          "rows_updated",
+          "validation_status",
+          "validation_detail"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "38d069d7-248e-4c47-8432-3f1b6ba6a842",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_etl_logs_suite",
+  "notes": null
+}

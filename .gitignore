@@ -163,12 +163,7 @@ reports/asset/pipeline.mp4
 reports/charts/
 
 gx/uncommitted/
-gx/expectations/
 
 link/
 
 .claude/settings.local.json
-
-# Great Expectations generated files
-/gx/checkpoints/
-/gx/validation_definitions/

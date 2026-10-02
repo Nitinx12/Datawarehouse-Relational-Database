@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "id": "27811284-e971-43a1-a2a5-2e9f03363bd6",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "a2843727-ef7b-404c-bc45-aad311a24d26",
+      "kwargs": {
+        "column_list": [
+          "cst_id",
+          "cst_key",
+          "cst_first_name",
+          "cst_last_name",
+          "cst_marital_status",
+          "cst_gndr",
+          "create_date",
+          "updated_at",
+          "loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "4375a5d6-6196-4ed3-85af-229ec9db18ac",
+      "kwargs": {
+        "column": "cst_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    }
+  ],
+  "id": "154f7ec4-0857-4a5b-8338-2b021a653e35",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "staging_cust_info_suite",
+  "notes": null
+}

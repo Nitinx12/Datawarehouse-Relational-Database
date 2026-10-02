@@ -1,0 +1,20 @@
+{
+  "actions": [],
+  "id": "af13722b-8eb0-4165-9e24-0684c17f3527",
+  "name": "warehouse_layer",
+  "result_format": "SUMMARY",
+  "validation_definitions": [
+    {
+      "id": "90f291e2-2dd7-4e8c-b59f-9ba354f95f25",
+      "name": "warehouse_dim_customers_validation"
+    },
+    {
+      "id": "4caafe39-2010-492e-b7b6-61525a715f80",
+      "name": "warehouse_dim_products_validation"
+    },
+    {
+      "id": "e05857b0-acc7-4bc8-ae74-a5e81e5567c0",
+      "name": "warehouse_fact_sales_validation"
+    }
+  ]
+}

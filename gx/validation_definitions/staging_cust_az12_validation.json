@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "9ca2ecd8-136c-49a4-94c8-ab81e7487873",
+      "name": "staging_cust_az12"
+    },
+    "batch_definition": {
+      "id": "a14f1628-04b0-4747-ae0a-a02310a29891",
+      "name": "staging_cust_az12_batch"
+    },
+    "datasource": {
+      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "82769262-31f5-416c-937e-a474da8de52c",
+  "name": "staging_cust_az12_validation",
+  "suite": {
+    "id": "26130ad7-6120-45f5-a84e-35eedefe0a61",
+    "name": "staging_cust_az12_suite"
+  }
+}

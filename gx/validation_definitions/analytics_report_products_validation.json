@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "fec99171-faed-43ad-8462-bd7d4f751989",
+      "name": "analytics_report_products"
+    },
+    "batch_definition": {
+      "id": "8fd685f2-3f97-41d6-abd3-2e3b0f6112e0",
+      "name": "analytics_report_products_batch"
+    },
+    "datasource": {
+      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "af558eb2-64f2-4016-81b0-8a18b4fea62e",
+  "name": "analytics_report_products_validation",
+  "suite": {
+    "id": "ab9c9cc3-c613-46a6-87a2-8c412edee55e",
+    "name": "analytics_report_products_suite"
+  }
+}

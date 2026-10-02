@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "id": "9e231e8b-5fb2-4dbe-92c3-a2cbaa5efd21",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "0133e4e2-e6a7-492e-a329-0bbb6bdec216",
+      "kwargs": {
+        "column_list": [
+          "category",
+          "subcategory",
+          "total_revenue",
+          "percentage_of_total"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "b75dbbd4-b59e-427f-b2d6-accfe004203d",
+      "kwargs": {
+        "column": "percentage_of_total",
+        "max_value": 100.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "4b275c54-855f-4f46-8f10-495d38113503",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "analytics_report_category_suite",
+  "notes": null
+}

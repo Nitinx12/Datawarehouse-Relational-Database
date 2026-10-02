@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "30ff23b0-7c32-4a65-ba2d-2a57400148be",
+      "name": "warehouse_dim_customers"
+    },
+    "batch_definition": {
+      "id": "14e19a01-0d77-449e-bd70-a4bfe7eb63b5",
+      "name": "warehouse_dim_customers_batch"
+    },
+    "datasource": {
+      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "90f291e2-2dd7-4e8c-b59f-9ba354f95f25",
+  "name": "warehouse_dim_customers_validation",
+  "suite": {
+    "id": "dc5417db-f418-47c4-a376-242ff8d89940",
+    "name": "warehouse_dim_customers_suite"
+  }
+}

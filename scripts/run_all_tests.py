@@ -13,12 +13,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.utils.connection import close_connection, get_postgres_connection
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 console = Console()
 
-DQ_SUITES = ["source", "staging", "warehouse"]
+DQ_SUITES = ["source", "staging", "warehouse", "analytics"]
 
 
 # parses CLI arguments for the test run
@@ -27,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip",
         default="",
-        help="Comma separated stages to skip from unit, smoke, dq",
+        help="Comma separated stages to skip from unit, smoke, dq, gx",
     )
     return parser.parse_args()
 
@@ -56,8 +57,6 @@ def run_pytest(suite: str) -> dict:
 
 # runs one SQL loop file and returns its pass state
 def run_sql_file(path: str) -> dict:
-    import psycopg
-
     started = time.time()
     result = {
         "name": Path(path).as_posix(),
@@ -65,14 +64,8 @@ def run_sql_file(path: str) -> dict:
         "seconds": 0.0,
         "detail": "",
     }
-    conn = psycopg.connect(
-        host="localhost",
-        port="5432",
-        dbname="datawarehouse",
-        user="postgres",
-        password="admin",
-        autocommit=True,
-    )
+    conn = get_postgres_connection()
+    conn.autocommit = True
     try:
         with open(path, encoding="utf-8") as handle:
             conn.execute(handle.read())
@@ -81,26 +74,15 @@ def run_sql_file(path: str) -> dict:
         result["detail"] = str(exc).strip().splitlines()[0][:200]
         logger.error("sql failed name=%s error=%s", path, result["detail"])
     finally:
-        conn.close()
+        close_connection(conn)
         result["seconds"] = round(time.time() - started, 1)
     return result
 
 
 # checks postgres reachability once before the DQ stage
 def pg_reachable() -> bool:
-    import psycopg
-
     try:
-        conn = psycopg.connect(
-            host="localhost",
-            port="5432",
-            dbname="datawarehouse",
-            user="postgres",
-            password="admin",
-            connect_timeout=5,
-            autocommit=True,
-        )
-        conn.close()
+        close_connection(get_postgres_connection())
         return True
     except Exception:  # noqa: BLE001
         return False
@@ -119,6 +101,36 @@ def run_dq() -> list[dict]:
             outcome["name"] = path
             results.append(outcome)
     return results
+
+
+# runs the GX layer gates and returns one result row per layer
+def run_gx() -> list[dict]:
+    from scripts.run_gx_validations import run_all as run_gx_layers
+
+    try:
+        outcomes = run_gx_layers()
+    except Exception as exc:  # noqa: BLE001
+        return [
+            {
+                "name": "gx layers",
+                "status": "FAILED",
+                "seconds": 0.0,
+                "detail": str(exc).strip().splitlines()[0][:200],
+            }
+        ]
+    rows: list[dict] = []
+    for outcome in outcomes:
+        passed = outcome["success"]
+        logger.info("gx %s %s", outcome["layer"], "PASS" if passed else "FAIL")
+        rows.append(
+            {
+                "name": outcome["name"],
+                "status": "SUCCESS" if passed else "FAILED",
+                "seconds": outcome["seconds"],
+                "detail": outcome["detail"],
+            }
+        )
+    return rows
 
 
 # renders the end-of-run summary table
@@ -175,6 +187,8 @@ def main() -> int:
                         "detail": outcome["detail"],
                     }
                 )
+    if "gx" not in skipped and not any(r["status"] == "FAILED" for r in results):
+        results.extend(run_gx())
     elapsed = (datetime.now(UTC) - started).total_seconds()
     print_summary(results, elapsed)
     failed = [r["name"] for r in results if r["status"] not in ("SUCCESS", "PASS")]

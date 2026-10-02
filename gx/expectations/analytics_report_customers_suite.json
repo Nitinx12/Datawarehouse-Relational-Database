@@ -1,0 +1,86 @@
+{
+  "expectations": [
+    {
+      "id": "aec08827-1ca5-42a4-8386-8099c9880077",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "d5998ba8-69d2-4e84-bd3a-fc873df35e06",
+      "kwargs": {
+        "column_list": [
+          "customer_sk",
+          "customer_key",
+          "age",
+          "age_group",
+          "customer_segment",
+          "total_orders",
+          "total_sales",
+          "total_quantity",
+          "total_products",
+          "lifespan_months",
+          "recency_months",
+          "avg_order_value",
+          "avg_monthly_spend"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "1f546b92-1dc1-41bd-ae7f-bff0ee886dea",
+      "kwargs": {
+        "column": "customer_segment",
+        "value_set": [
+          "VIP",
+          "Regular",
+          "New"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "99798f08-a873-4b54-9c03-b4715eb6146c",
+      "kwargs": {
+        "column": "total_orders",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "731a7dde-a80a-478a-b4f2-7acd39d29162",
+      "kwargs": {
+        "column": "lifespan_months",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "f1b4c9ee-2766-4481-9d06-484bb0902310",
+      "kwargs": {
+        "column": "recency_months",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "b79a10b0-c419-4ee7-bcb7-a653e89ce8c5",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "analytics_report_customers_suite",
+  "notes": null
+}

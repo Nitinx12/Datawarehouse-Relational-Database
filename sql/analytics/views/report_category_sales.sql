@@ -35,7 +35,11 @@ SELECT
     CASE
         WHEN COUNT(DISTINCT category_lines.order_number) = 0 THEN 0
         ELSE SUM(category_lines.sales_amount) / COUNT(DISTINCT category_lines.order_number)
-    END AS avg_order_revenue
+    END AS avg_order_revenue,
+    ROUND(
+        SUM(category_lines.sales_amount) / NULLIF(SUM(SUM(category_lines.sales_amount)) OVER (), 0) * 100,
+        2
+    ) AS percentage_of_total
 FROM category_lines
 
 GROUP BY

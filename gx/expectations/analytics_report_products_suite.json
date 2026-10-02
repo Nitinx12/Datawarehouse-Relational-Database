@@ -1,0 +1,63 @@
+{
+  "expectations": [
+    {
+      "id": "c1fcfa78-cbb8-4650-80b0-c3fdb83a6f29",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "1e660f30-7c60-4f85-bfe1-c193fb9360d0",
+      "kwargs": {
+        "column_list": [
+          "product_sk",
+          "product_number",
+          "total_orders",
+          "total_sales",
+          "total_quantity",
+          "total_customers",
+          "avg_order_revenue",
+          "avg_monthly_revenue",
+          "product_segment",
+          "lifespan_months"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "de1428e0-9d76-476c-84ab-c74227a80651",
+      "kwargs": {
+        "column": "product_segment",
+        "value_set": [
+          "High-Performer",
+          "Mid-Range",
+          "Low-Performer"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "ff53718c-2810-4e5a-88dc-4c7b0fef59f7",
+      "kwargs": {
+        "column": "total_orders",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "ab9c9cc3-c613-46a6-87a2-8c412edee55e",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "analytics_report_products_suite",
+  "notes": null
+}

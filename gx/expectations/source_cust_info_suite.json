@@ -1,0 +1,38 @@
+{
+  "expectations": [
+    {
+      "id": "ce61b112-fc64-4ba2-bb5e-348c992bbaf7",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "84edb521-65ae-4318-b7f3-9ef46dd51695",
+      "kwargs": {
+        "column_list": [
+          "cst_id",
+          "cst_key",
+          "cst_firstname",
+          "cst_lastname",
+          "cst_marital_status",
+          "cst_gndr",
+          "cst_create_date",
+          "updated_at",
+          "_loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "b099ad22-e579-49ac-a30d-5408dc6d9209",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_cust_info_suite",
+  "notes": null
+}

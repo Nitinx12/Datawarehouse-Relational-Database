@@ -1,0 +1,33 @@
+{
+  "expectations": [
+    {
+      "id": "e32478fa-da7e-44db-a3ad-3b70ceb84e57",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "abc18b82-c8ee-4b51-aeef-51f4870a69f7",
+      "kwargs": {
+        "column_list": [
+          "cid",
+          "cntry",
+          "updated_at",
+          "loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "b848b8a4-5ecd-4fa6-ac73-eeb16d7ca897",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "staging_loc_a101_suite",
+  "notes": null
+}

@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "id": "2c30294f-e121-4d05-98ae-d2fea1f4e2f8",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "fede2a54-0b5c-4b06-8a37-dc9064b9c30d",
+      "kwargs": {
+        "column_list": [
+          "bdate",
+          "cid",
+          "gen",
+          "updated_at",
+          "id",
+          "_loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "e4efc723-e396-4ed0-9645-9fe458152cc0",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_cust_az12_suite",
+  "notes": null
+}

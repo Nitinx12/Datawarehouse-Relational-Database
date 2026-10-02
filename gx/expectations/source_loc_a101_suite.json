@@ -1,0 +1,34 @@
+{
+  "expectations": [
+    {
+      "id": "d1b90246-fb5c-4812-a292-c765abb234ab",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "cadf4c2e-fc83-48ce-b260-1ce11d240639",
+      "kwargs": {
+        "column_list": [
+          "cid",
+          "cntry",
+          "updated_at",
+          "id",
+          "_loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "2bdb6c52-03ba-4747-b69c-b5881c7c4cbf",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_loc_a101_suite",
+  "notes": null
+}

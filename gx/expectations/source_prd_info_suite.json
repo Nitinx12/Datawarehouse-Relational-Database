@@ -1,0 +1,38 @@
+{
+  "expectations": [
+    {
+      "id": "08c0e7c4-cf14-4e61-a883-5ccb2f693c23",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "b1732d80-2173-4a0c-a3c7-2ae3e2f977a6",
+      "kwargs": {
+        "column_list": [
+          "prd_id",
+          "prd_key",
+          "prd_nm",
+          "prd_cost",
+          "prd_line",
+          "prd_start_dt",
+          "prd_end_dt",
+          "updated_at",
+          "_loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "e5857b8f-44ed-4de1-a530-f56264658862",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_prd_info_suite",
+  "notes": null
+}

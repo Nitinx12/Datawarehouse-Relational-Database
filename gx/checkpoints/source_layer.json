@@ -1,0 +1,36 @@
+{
+  "actions": [],
+  "id": "2c4eb735-84f9-42cb-9dad-95b4e1957db9",
+  "name": "source_layer",
+  "result_format": "SUMMARY",
+  "validation_definitions": [
+    {
+      "id": "c0a8a8db-a15a-4278-ad64-9c8acb5c1a74",
+      "name": "source_cust_az12_validation"
+    },
+    {
+      "id": "75df33cc-d563-4fc3-b7de-faf24326a355",
+      "name": "source_loc_a101_validation"
+    },
+    {
+      "id": "71d79abb-c158-44a1-b0f9-cb6ac43da61c",
+      "name": "source_px_cat_g1v2_validation"
+    },
+    {
+      "id": "66b33c27-15f4-4ead-8a9a-f4394156f1f5",
+      "name": "source_cust_info_validation"
+    },
+    {
+      "id": "ecac0599-f65a-4c6e-b10d-db0bf2e6f740",
+      "name": "source_etl_logs_validation"
+    },
+    {
+      "id": "effb6a55-bf33-42fa-95ca-25c1f4916e46",
+      "name": "source_prd_info_validation"
+    },
+    {
+      "id": "847b993d-76de-4f99-8dbc-1425edb7394d",
+      "name": "source_sales_details_validation"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "f298a81c-6603-4905-b29a-548484bb3e38",
+      "name": "source_px_cat_g1v2"
+    },
+    "batch_definition": {
+      "id": "efa0be8b-3ed5-4047-8f00-c76da0c029bc",
+      "name": "source_px_cat_g1v2_batch"
+    },
+    "datasource": {
+      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "71d79abb-c158-44a1-b0f9-cb6ac43da61c",
+  "name": "source_px_cat_g1v2_validation",
+  "suite": {
+    "id": "f86f85dd-8798-48ac-8c44-a1472a25afc7",
+    "name": "source_px_cat_g1v2_suite"
+  }
+}

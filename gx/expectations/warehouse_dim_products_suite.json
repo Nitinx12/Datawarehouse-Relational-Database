@@ -1,0 +1,69 @@
+{
+  "expectations": [
+    {
+      "id": "d62570f1-dce7-4b78-aa5c-7568a239f0c9",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "904e9377-ef81-40ac-a698-656a6fe3165b",
+      "kwargs": {
+        "column_list": [
+          "product_sk",
+          "product_id",
+          "product_number",
+          "product_name",
+          "category_id",
+          "category",
+          "subcategory",
+          "maintenance",
+          "cost",
+          "product_line",
+          "start_date",
+          "end_date"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "a8a717f5-a335-4c2a-8a01-d58188b96e76",
+      "kwargs": {
+        "column": "product_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "7eddd227-021c-406f-ab56-99f33818167f",
+      "kwargs": {
+        "column": "product_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "4672b995-818c-42d0-a13d-03eea77cbc33",
+      "kwargs": {
+        "column": "cost",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "51961dab-14bb-4101-8331-edfd4fd5220d",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "warehouse_dim_products_suite",
+  "notes": null
+}

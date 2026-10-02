@@ -1,0 +1,40 @@
+{
+  "expectations": [
+    {
+      "id": "123be9fe-a1e6-41d2-a9b6-b49914444064",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "7a1c9bf1-2129-403e-8507-3fadfdf3f0b4",
+      "kwargs": {
+        "column_list": [
+          "sls_ord_num",
+          "sls_prd_key",
+          "sls_cust_id",
+          "sls_order_dt",
+          "sls_ship_dt",
+          "sls_due_dt",
+          "sls_sales",
+          "sls_quantity",
+          "sls_price",
+          "updated_at",
+          "_loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "05f68ef2-754e-4011-bd20-6f44c23f055e",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "source_sales_details_suite",
+  "notes": null
+}

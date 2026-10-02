@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "id": "bc13acc4-e291-4f76-ade0-185ddb2ea0c3",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "2ded9f2e-c0ae-4ee7-af29-19cbbe4b8f81",
+      "kwargs": {
+        "column_list": [
+          "order_month",
+          "order_count",
+          "customer_count",
+          "new_customer_count",
+          "total_revenue"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "b7edd6c4-ff81-4b70-82a7-bf4f8b8666a0",
+      "kwargs": {
+        "column": "customer_count",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "6f7f6a0d-8263-48de-82e3-321e382bcff6",
+      "kwargs": {
+        "column": "total_revenue",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "15d3c26f-79a4-468c-b0f5-5850bb95256d",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "analytics_report_monthly_suite",
+  "notes": null
+}

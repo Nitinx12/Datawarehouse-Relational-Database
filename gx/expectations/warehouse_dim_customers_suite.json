@@ -1,0 +1,71 @@
+{
+  "expectations": [
+    {
+      "id": "dbce95a8-5068-45f7-a42b-104188c1c26e",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "ab3e455c-a516-49b2-85b2-e7b47fa7b20f",
+      "kwargs": {
+        "column_list": [
+          "customer_sk",
+          "customer_key",
+          "cst_id",
+          "first_name",
+          "last_name",
+          "marital_status",
+          "gender",
+          "birthdate",
+          "country",
+          "create_date"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "76e19f9a-80ab-4400-84d2-3ca9bb43fb1d",
+      "kwargs": {
+        "column": "customer_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "6cef148b-4080-49d5-88d3-9a9b34dcc5fb",
+      "kwargs": {
+        "column": "customer_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "6551e1ab-a4b7-4dbe-bdd9-098212695139",
+      "kwargs": {
+        "column": "gender",
+        "value_set": [
+          "Female",
+          "Male",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    }
+  ],
+  "id": "dc5417db-f418-47c4-a376-242ff8d89940",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "warehouse_dim_customers_suite",
+  "notes": null
+}

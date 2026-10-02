@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "37ecb544-db36-4b9c-a35d-63c96de8110f",
+      "name": "analytics_report_monthly"
+    },
+    "batch_definition": {
+      "id": "ce9cd24c-f05c-439c-abd5-18c4dbf7b3af",
+      "name": "analytics_report_monthly_batch"
+    },
+    "datasource": {
+      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "e6576ead-431b-44ca-a27d-afa2d75b93a2",
+  "name": "analytics_report_monthly_validation",
+  "suite": {
+    "id": "15d3c26f-79a4-468c-b0f5-5850bb95256d",
+    "name": "analytics_report_monthly_suite"
+  }
+}

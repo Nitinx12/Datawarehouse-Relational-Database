@@ -1,0 +1,34 @@
+{
+  "expectations": [
+    {
+      "id": "38e5e787-4587-4366-855b-24349981b7f9",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "6fa323d3-1a34-4c68-bd38-436b2ebe7a09",
+      "kwargs": {
+        "column_list": [
+          "cid",
+          "birthdate",
+          "gender",
+          "updated_at",
+          "loaded_at"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    }
+  ],
+  "id": "26130ad7-6120-45f5-a84e-35eedefe0a61",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "staging_cust_az12_suite",
+  "notes": null
+}

@@ -1,0 +1,66 @@
+{
+  "expectations": [
+    {
+      "id": "6fd9ae88-123d-4392-9c08-bc1441dcf7fd",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "01d7bbe7-1ce1-4aab-8e2b-059ac28c53e9",
+      "kwargs": {
+        "column_list": [
+          "order_number",
+          "product_key",
+          "customer_key",
+          "order_date",
+          "sales_amount",
+          "quantity",
+          "price"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "4fc49a5e-6e99-4e07-8569-c4b0e9b19d5e",
+      "kwargs": {
+        "column": "sales_amount",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "22bbfe25-1e14-47dc-99b5-eb326c0847fe",
+      "kwargs": {
+        "column": "quantity",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "57ea6724-5a1f-49ee-aa7e-5acc8f06b4d4",
+      "kwargs": {
+        "column": "price",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "2188eaca-d95b-4d4f-b1cb-3ac84244a8fb",
+  "meta": {
+    "great_expectations_version": "1.23.2"
+  },
+  "name": "warehouse_fact_sales_suite",
+  "notes": null
+}
