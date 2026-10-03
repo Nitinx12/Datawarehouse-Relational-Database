@@ -62,8 +62,19 @@ def _int_env(name: str, default: int) -> int:
 def verify_spark_compatibility() -> None:
     if not PYSPARK_VERSION.startswith("3.5."):
         raise RuntimeError(
-            "Mongo Spark connector 10.4.0 requires PySpark 3.5.x; "
+            "Mongo Spark connector 10.5.0 requires PySpark 3.5.x; "
             f"found PySpark {PYSPARK_VERSION}. Run `uv sync` to install the pinned dependencies."
+        )
+    jar_dir = PROJECT_ROOT / "jars"
+    if next(jar_dir.glob("mongo-spark-connector_2.12-10.4.0.jar"), None) is not None:
+        raise RuntimeError(
+            "mongo-spark-connector 10.4.0 is incompatible with Spark 3.5 "
+            "(NoSuchMethodError on resolveAndBind); replace it with 10.5.0."
+        )
+    if next(jar_dir.glob("mongo-spark-connector_2.12-10.5.0.jar"), None) is None:
+        raise RuntimeError(
+            "mongo-spark-connector_2.12-10.5.0.jar missing from jars/; "
+            "download it from Maven Central before running the extract."
         )
 
 
@@ -1077,6 +1088,12 @@ def main() -> None:
                             "error": short_error(exc),
                         }
                     )
+                    if not is_retryable_error(exc):
+                        logger.error(
+                            "fatal spark error, aborting remaining collections"
+                        )
+                        progress.advance(task)
+                        break
                 progress.advance(task)
     finally:
         spark.stop()

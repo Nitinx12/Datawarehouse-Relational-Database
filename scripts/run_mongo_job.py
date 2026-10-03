@@ -9,7 +9,7 @@ JOB_FILE = REPO_ROOT / "src" / "jobs" / "mongo_to_postgres.py"
 JARS = [
     "bson-5.1.4.jar",
     "bson-record-codec-5.1.4.jar",
-    "mongo-spark-connector_2.12-10.4.0.jar",
+    "mongo-spark-connector_2.12-10.5.0.jar",
     "mongodb-driver-core-5.1.4.jar",
     "mongodb-driver-sync-5.1.4.jar",
     "postgresql.jar",
