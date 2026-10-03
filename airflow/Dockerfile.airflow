@@ -2,6 +2,8 @@
 # Build: docker compose build airflow-scheduler
 FROM apache/airflow:2.10.5-python3.11
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl \

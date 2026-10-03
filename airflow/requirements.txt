@@ -1,5 +1,6 @@
 # Runtime deps for main.py, scripts/, and src/jobs inside the Airflow image.
 # apache-airflow itself comes from the base image; install with its constraints file.
+apache-airflow-providers-postgres>=5.0
 pandas>=2.0,<3
 psycopg[binary]>=3.1
 pymongo>=4.0
