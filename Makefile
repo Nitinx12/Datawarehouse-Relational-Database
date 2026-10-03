@@ -2,6 +2,7 @@ PY = .venv/Scripts/python.exe
 
 .PHONY: help pipeline no-extract extract source-tests staging staging-tests
 .PHONY: warehouse warehouse-tests analytics analytics-tests master test gx gx-build lint format
+.PHONY: dashboard dashboard-install
 
 help:
 	@echo "pipeline         full extract-to-master run (main.py)"
@@ -12,6 +13,8 @@ help:
 	@echo "gx               run all GX layer and master gates"
 	@echo "gx-build         rebuild GX project from specs"
 	@echo "lint format      ruff check / format"
+	@echo "dashboard-install install dashboard deps into .venv"
+	@echo "dashboard          run the Streamlit dashboard"
 
 pipeline:
 	$(PY) main.py
@@ -56,7 +59,13 @@ gx-build:
 	$(PY) scripts/setup_gx_project.py
 
 lint:
-	$(PY) -m ruff check main.py scripts tests
+	$(PY) -m ruff check main.py scripts tests dashboard
 
 format:
-	$(PY) -m ruff format main.py scripts tests
+	$(PY) -m ruff format main.py scripts tests dashboard
+
+dashboard-install:
+	uv pip install --python $(PY) -r dashboard/requirements.txt
+
+dashboard:
+	$(PY) -m streamlit run dashboard/home.py
