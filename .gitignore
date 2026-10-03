@@ -162,7 +162,14 @@ __init__.py
 reports/asset/pipeline.mp4
 reports/charts/
 
+# ==========================
+# Great Expectations (version suites/checkpoints, ignore run outputs)
+# ==========================
 gx/uncommitted/
+gx/uncommitted/validations/
+gx/uncommitted/data_docs/
+gx/uncommitted/config_variables.yml
+.gx/
 
 link/
 
