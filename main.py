@@ -113,6 +113,25 @@ def run_extract() -> list[dict]:
     return [run_extract_job(job) for job in EXTRACT_JOBS]
 
 
+# runs the layer SQL data-quality checks and returns its result row
+def run_dq_checks(layer: str) -> dict:
+    started = time.time()
+    proc = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "run_dq_checks.py"), "--layer", layer],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    passed = proc.returncode == 0
+    return {
+        "name": f"dq {layer}",
+        "status": "SUCCESS" if passed else "FAILED",
+        "seconds": round(time.time() - started, 1),
+        "detail": "" if passed else extract_error(proc),
+    }
+
+
 # runs one GX layer gate and returns its result row
 def run_gx_gate(layer: str) -> dict:
     import great_expectations as gx
@@ -184,7 +203,11 @@ def run_stage(stage: str) -> list[dict]:
         return run_analytics()
     if stage == "master":
         return run_master_gate()
-    return [run_gx_gate(stage.removesuffix("-tests"))]
+    layer = stage.removesuffix("-tests")
+    dq_row = run_dq_checks(layer)
+    if dq_row["status"] != "SUCCESS":
+        return [dq_row]
+    return [dq_row, run_gx_gate(layer)]
 
 
 # renders the end-of-run summary table
