@@ -4,10 +4,12 @@ set -euo pipefail
 
 airflow db migrate
 
-airflow users create \
-    --username "${AIRFLOW_ADMIN_USER:-admin}" \
-    --password "${AIRFLOW_ADMIN_PASSWORD:-admin}" \
-    --firstname Admin \
-    --lastname User \
-    --role Admin \
-    --email admin@example.com || true
+if [ "${_AIRFLOW_WWW_USER_CREATE:-true}" = "true" ]; then
+    airflow users create \
+        --username "${_AIRFLOW_WWW_USER_USERNAME:-admin}" \
+        --password "${_AIRFLOW_WWW_USER_PASSWORD:?set _AIRFLOW_WWW_USER_PASSWORD in .env}" \
+        --firstname Admin \
+        --lastname User \
+        --role Admin \
+        --email admin@example.com || true
+fi
