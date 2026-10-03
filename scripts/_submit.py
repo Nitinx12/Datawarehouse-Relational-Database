@@ -10,6 +10,13 @@ from typing import TextIO
 REPO_ROOT = Path(__file__).resolve().parents[1]
 JARS_DIR = REPO_ROOT / "jars"
 
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 FILTERED_LINES = (
     "jdk.incubator.vector",
     "PySpark does not yet fully support pandas",
@@ -73,12 +80,17 @@ def pump_stderr(stream: TextIO) -> None:
 def submit(job_file: Path, jars: list[str], argv: list[str]) -> int:
     if not job_file.exists():
         raise FileNotFoundError(f"job file not found: {job_file}")
+    master = os.getenv("SPARK_MASTER", "local[*]")
+    driver_memory = os.getenv("SPARK_DRIVER_MEMORY", "4g")
+    logger.info(
+        "submit job=%s master=%s driver_memory=%s", job_file.name, master, driver_memory
+    )
     command = [
         find_spark_submit(),
         "--master",
-        os.getenv("SPARK_MASTER", "local[*]"),
+        master,
         "--driver-memory",
-        os.getenv("SPARK_DRIVER_MEMORY", "4g"),
+        driver_memory,
         "--driver-java-options",
         JVM_TZ_OPTION,
         "--conf",
@@ -118,4 +130,8 @@ def submit(job_file: Path, jars: list[str], argv: list[str]) -> int:
         code = 130
     finally:
         pump.join(timeout=5)
+    if code == 0:
+        logger.info("submit done job=%s exit=0", job_file.name)
+    else:
+        logger.error("submit failed job=%s exit=%d", job_file.name, code)
     return code

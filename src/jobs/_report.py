@@ -1,5 +1,9 @@
 import re
 
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 # collapses a traceback into one readable line for console display
 def short_error(exc: BaseException, max_len: int = 220) -> str:
@@ -52,26 +56,38 @@ def render_report(
     succeeded = sum(1 for result in results if result["status"] == "SUCCESS")
     has_issues = bool(failed_results) or bool(validation_failures)
     mode_suffix = " dry-run" if dry_run else ""
-    print(f"\n{title}{mode_suffix}")
-    print(f"Source={source} TargetSchema={target_schema} RunId={run_id}")
+    logger.info("%s%s", title, mode_suffix)
+    logger.info("Source=%s TargetSchema=%s RunId=%s", source, target_schema, run_id)
     for result in results:
-        print(
-            f"{name_column}={result['name']} Status={result['status']} "
-            f"Mode={result['mode']} Total={result['total']:,} "
-            f"Inserted={result['inserted']:,} Updated={result['updated']:,} "
-            f"Skipped={result['skipped']:,} After={result['after']:,} "
-            f"Validation={result['validation']} Seconds={result['seconds']:.2f}"
+        logger.info(
+            "%s=%s Status=%s Mode=%s Total=%s Inserted=%s Updated=%s Skipped=%s After=%s Validation=%s Seconds=%.2f",
+            name_column,
+            result["name"],
+            result["status"],
+            result["mode"],
+            f"{result['total']:,}",
+            f"{result['inserted']:,}",
+            f"{result['updated']:,}",
+            f"{result['skipped']:,}",
+            f"{result['after']:,}",
+            result["validation"],
+            result["seconds"],
         )
         if result["error"]:
-            print(f"  Error={result['error']}")
-    print(
-        f"Summary {unit}={len(results)} Succeeded={succeeded} Skipped={skipped} "
-        f"Failed={len(failed_results)} ValidationFailures={len(validation_failures)} "
-        f"TotalRows={sum(result['total'] for result in results):,} "
-        f"Inserted={sum(result['inserted'] for result in results):,} "
-        f"Updated={sum(result['updated'] for result in results):,} "
-        f"NowInPostgres={sum(result['after'] for result in results):,} "
-        f"Seconds={elapsed:.2f}"
+            logger.error("Error=%s", result["error"])
+    logger.info(
+        "Summary %s=%d Succeeded=%d Skipped=%d Failed=%d ValidationFailures=%d TotalRows=%s Inserted=%s Updated=%s NowInPostgres=%s Seconds=%.2f",
+        unit,
+        len(results),
+        succeeded,
+        skipped,
+        len(failed_results),
+        len(validation_failures),
+        f"{sum(result['total'] for result in results):,}",
+        f"{sum(result['inserted'] for result in results):,}",
+        f"{sum(result['updated'] for result in results):,}",
+        f"{sum(result['after'] for result in results):,}",
+        elapsed,
     )
-    print("Result=COMPLETED_WITH_ISSUES" if has_issues else "Result=SUCCESS")
+    logger.info("Result=%s", "COMPLETED_WITH_ISSUES" if has_issues else "SUCCESS")
     return has_issues

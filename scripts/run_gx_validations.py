@@ -11,6 +11,10 @@ PROJECT_DIR = Path(__file__).resolve().parents[1]
 if str(PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
 
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 # loads one spec query into a dataframe with the spec column order
 def fetch_frame(query: str, columns: list[str]) -> pd.DataFrame:
@@ -128,10 +132,15 @@ def main() -> int:
     failed = [item["name"] for item in results if not item["success"]]
     for item in results:
         status = "PASS" if item["success"] else "FAIL"
-        print(f"{status} {item['name']} ({item['seconds']}s) {item['detail']}")
+        logger.info(
+            "gx %s %s (%ss) %s", item["name"], status, item["seconds"], item["detail"]
+        )
     passed = len(results) - len(failed)
-    print(f"gx layers: {passed}/{len(results)} passed")
-    return 0 if not failed else 1
+    if failed:
+        logger.error("gx layers: %d/%d passed", passed, len(results))
+        return 1
+    logger.info("gx layers: %d/%d passed", passed, len(results))
+    return 0
 
 
 if __name__ == "__main__":

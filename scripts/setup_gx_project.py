@@ -1,5 +1,6 @@
 # rebuilds the GX file project with per-layer gates plus a master gate
 import shutil
+import sys
 from pathlib import Path
 
 import great_expectations as gx
@@ -14,6 +15,13 @@ from great_expectations.expectations import (
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 GX_DIR = PROJECT_DIR / "gx"
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+from src.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 DATASOURCE_NAME = "warehouse_frames"
 LAYERS = ["source", "staging", "warehouse", "analytics"]
 MASTER_CHECKPOINT = "master_layer"
@@ -901,9 +909,11 @@ def build() -> None:
             validation_definitions=master_validations,
         )
     )
-    print(
-        f"gx project ready: {len(specs)} validations in "
-        f"{len(LAYERS)} layer checkpoints plus {MASTER_CHECKPOINT}"
+    logger.info(
+        "gx project ready: %d validations in %d layer checkpoints plus %s",
+        len(specs),
+        len(LAYERS),
+        MASTER_CHECKPOINT,
     )
 
 
