@@ -39,7 +39,7 @@ x-airflow-common: &airflow-common
 
 services:
   postgres:
-    image: postgres:16
+    image: postgres:17
     env_file:
       - .env
     environment:
@@ -74,7 +74,7 @@ services:
     restart: unless-stopped
 
   airflow-metadata:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_USER: ${AIRFLOW_DB_USER:-airflow}
       POSTGRES_PASSWORD: ${AIRFLOW_DB_PASSWORD:?set AIRFLOW_DB_PASSWORD in .env}
