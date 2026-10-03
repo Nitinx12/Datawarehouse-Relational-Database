@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "aec08827-1ca5-42a4-8386-8099c9880077",
+      "id": "ad25a47c-ef3e-4ba9-a06d-188e8b3e3dcd",
       "kwargs": {
         "min_value": 1
       },
@@ -10,19 +10,23 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "d5998ba8-69d2-4e84-bd3a-fc873df35e06",
+      "id": "ae446e5f-76a5-414a-b4b3-a6a3bdeac0a0",
       "kwargs": {
         "column_list": [
           "customer_sk",
           "customer_key",
+          "cst_id",
+          "customer_name",
+          "birthdate",
           "age",
-          "age_group",
-          "customer_segment",
+          "last_order_date",
           "total_orders",
           "total_sales",
           "total_quantity",
           "total_products",
           "lifespan_months",
+          "age_group",
+          "customer_segment",
           "recency_months",
           "avg_order_value",
           "avg_monthly_spend"
@@ -33,7 +37,34 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "1f546b92-1dc1-41bd-ae7f-bff0ee886dea",
+      "id": "d3bb168b-3633-4fce-9495-fb2609974363",
+      "kwargs": {
+        "column": "customer_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "6d0d770d-d20c-4a23-b73d-baf97361f64e",
+      "kwargs": {
+        "column": "customer_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "c09d2c90-a9ca-4764-ae44-1eb79b3becf3",
+      "kwargs": {
+        "column": "customer_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "f9f052b2-37fe-4dc7-b06c-4068f5f0e1a1",
       "kwargs": {
         "column": "customer_segment",
         "value_set": [
@@ -47,7 +78,23 @@
       "type": "expect_column_values_to_be_in_set"
     },
     {
-      "id": "99798f08-a873-4b54-9c03-b4715eb6146c",
+      "id": "204ba6c0-bab7-4e5e-aa5b-d17896abe222",
+      "kwargs": {
+        "column": "age_group",
+        "value_set": [
+          "Under 20",
+          "20-29",
+          "30-39",
+          "40-49",
+          "50 and above"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "8da3510e-ae6e-4008-92ee-0c275a1b2aa7",
       "kwargs": {
         "column": "total_orders",
         "min_value": 1.0
@@ -57,7 +104,17 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "731a7dde-a80a-478a-b4f2-7acd39d29162",
+      "id": "77433e82-bc03-4eb3-904b-e2b9d5961c2c",
+      "kwargs": {
+        "column": "total_sales",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "be270599-5461-4f39-a2c0-02489918bcb1",
       "kwargs": {
         "column": "lifespan_months",
         "min_value": 0.0
@@ -67,7 +124,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "f1b4c9ee-2766-4481-9d06-484bb0902310",
+      "id": "47298c28-b97f-4b3c-84bb-be76e391beb9",
       "kwargs": {
         "column": "recency_months",
         "min_value": 0.0
@@ -75,9 +132,29 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "e439fe1e-822a-4a0a-a877-b07a86d423a9",
+      "kwargs": {
+        "column": "avg_order_value",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "c639e4f9-daed-4691-ade2-cf0ce524a61e",
+      "kwargs": {
+        "column": "avg_monthly_spend",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
     }
   ],
-  "id": "b79a10b0-c419-4ee7-bcb7-a653e89ce8c5",
+  "id": "f2988037-26b6-4914-943a-e623dff88566",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

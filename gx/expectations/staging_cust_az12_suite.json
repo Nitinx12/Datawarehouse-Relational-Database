@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "38e5e787-4587-4366-855b-24349981b7f9",
+      "id": "7fe7b435-faf9-4f17-b1f1-c4821a4bdd7b",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "6fa323d3-1a34-4c68-bd38-436b2ebe7a09",
+      "id": "db3d73b8-10af-448c-b972-f20759b45e12",
       "kwargs": {
         "column_list": [
           "cid",
@@ -23,9 +23,50 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "7e95e0ff-4b87-46cf-af50-a2ec3533d09e",
+      "kwargs": {
+        "column": "cid"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d0229c8a-08ea-47f3-8d2f-af59cf773f63",
+      "kwargs": {
+        "column": "cid"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "e99e87f6-e699-478a-a355-d89dc462bb22",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "79539361-83a9-47b2-b0c6-ff685d78dc86",
+      "kwargs": {
+        "column": "gender",
+        "value_set": [
+          "Male",
+          "Female",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "26130ad7-6120-45f5-a84e-35eedefe0a61",
+  "id": "68e08ceb-2743-4b88-b69b-70f27ccd8377",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

@@ -1,24 +1,28 @@
 {
   "actions": [],
-  "id": "a51c5952-bc66-4497-8b61-8c33567de2fe",
+  "id": "47cfc815-f058-496b-b92a-1415cd27e74b",
   "name": "analytics_layer",
   "result_format": "SUMMARY",
   "validation_definitions": [
     {
-      "id": "e8c8d725-ae9b-40a4-a79c-3cdf55652ada",
+      "id": "e6512f76-66e9-441f-8200-2f36a5ff49e1",
       "name": "analytics_report_customers_validation"
     },
     {
-      "id": "af558eb2-64f2-4016-81b0-8a18b4fea62e",
+      "id": "f0883f11-fec3-42f3-b066-62124eb08d37",
       "name": "analytics_report_products_validation"
     },
     {
-      "id": "e6576ead-431b-44ca-a27d-afa2d75b93a2",
+      "id": "faf8af7c-8fed-49d3-954c-bac977940db0",
       "name": "analytics_report_monthly_validation"
     },
     {
-      "id": "902c222b-abfa-482c-8fd6-15a1d5f9614b",
+      "id": "02a256a2-ba4e-465a-bc4b-965ec22f308c",
       "name": "analytics_report_category_validation"
+    },
+    {
+      "id": "57ec6f16-7968-491e-81f6-ce6495605662",
+      "name": "analytics_monthly_snapshot_validation"
     }
   ]
 }

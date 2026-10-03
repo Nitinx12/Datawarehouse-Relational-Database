@@ -83,167 +83,175 @@ data_docs_sites:
 fluent_datasources:
   warehouse_frames:
     type: pandas
-    id: 83dbcf3e-1402-4473-ac86-7127b55736c7
+    id: f7edb3ca-f217-4176-9559-996db58dfcaf
     assets:
       source_cust_az12:
         type: dataframe
-        id: 35ae81cd-b4b1-407b-a7da-138e837ac177
+        id: 04bf67e0-7f92-4ec4-95b0-ac30f69bae90
         batch_metadata: {}
         batch_definitions:
           source_cust_az12_batch:
-            id: 2dde9b96-5707-4d84-893c-040425bb1888
+            id: 20b24ea7-f5a2-4ecf-a643-2b7bc158e9c9
             partitioner:
       source_loc_a101:
         type: dataframe
-        id: fb03142e-f41c-43ec-8a23-57f192fdd803
+        id: 98046739-fab7-4d03-bfe9-189a7e43bf57
         batch_metadata: {}
         batch_definitions:
           source_loc_a101_batch:
-            id: c8c1d07c-4a2d-40e8-a829-6d84cf380f6c
+            id: 601d885d-4794-442b-b09d-e68b9779816c
             partitioner:
       source_px_cat_g1v2:
         type: dataframe
-        id: f298a81c-6603-4905-b29a-548484bb3e38
+        id: d70ef3c7-3092-4b3f-ac1c-ee0a79630e7b
         batch_metadata: {}
         batch_definitions:
           source_px_cat_g1v2_batch:
-            id: efa0be8b-3ed5-4047-8f00-c76da0c029bc
+            id: d8083098-b251-4636-b20d-e55a3fac457e
             partitioner:
       source_cust_info:
         type: dataframe
-        id: e47acc28-ccd3-4753-885b-e991e4ae2091
+        id: b5239f1d-0419-425b-b8e6-64f2eaa035ad
         batch_metadata: {}
         batch_definitions:
           source_cust_info_batch:
-            id: be3c0edf-c104-4ce5-8821-c38b533af1b9
+            id: 5bc1ac19-abda-4d08-b07c-6eff720115e8
             partitioner:
       source_etl_logs:
         type: dataframe
-        id: f7d429af-e109-466e-b302-fbbc87ed1171
+        id: 26254289-9005-4b7c-a538-898009fa5f21
         batch_metadata: {}
         batch_definitions:
           source_etl_logs_batch:
-            id: fef34ca9-b700-4b13-841f-b935c2f5467c
+            id: 995bcffc-59bd-4733-a25a-6ff3fc01d620
             partitioner:
       source_prd_info:
         type: dataframe
-        id: 5d6c10c1-7cb2-4d9b-a161-94e433c8ddfc
+        id: 57cfbbb6-cdbf-4c25-9359-01fb0bf73577
         batch_metadata: {}
         batch_definitions:
           source_prd_info_batch:
-            id: 884cf4a8-d69e-4124-a1d9-f61cccac5eee
+            id: a31e93f8-2de1-49ab-b83e-d24c70944967
             partitioner:
       source_sales_details:
         type: dataframe
-        id: b3997d83-1061-4317-ae08-0315dff5e247
+        id: f71e6e54-ffaa-42c2-afbf-39bad74bcfcb
         batch_metadata: {}
         batch_definitions:
           source_sales_details_batch:
-            id: 3045a739-fa91-48b6-ba37-0d6b0e4f82f6
+            id: 5b7d7aff-bbd5-4095-ba89-9e69e9a6dc23
             partitioner:
       staging_cust_az12:
         type: dataframe
-        id: 9ca2ecd8-136c-49a4-94c8-ab81e7487873
+        id: 25db7669-9705-4070-be91-e52287fc3a26
         batch_metadata: {}
         batch_definitions:
           staging_cust_az12_batch:
-            id: a14f1628-04b0-4747-ae0a-a02310a29891
+            id: 400e314a-5256-4410-9cb0-ae2f698058e9
             partitioner:
       staging_cust_info:
         type: dataframe
-        id: a3e6ea4f-dff4-4f97-aa43-56e7501e4f68
+        id: 45ee97b7-daf1-4ab1-b94f-9bd1887c951e
         batch_metadata: {}
         batch_definitions:
           staging_cust_info_batch:
-            id: d3ba5521-d929-4939-aa1e-3de4ba71a00e
+            id: 25bea006-9df7-4acb-ab4c-86d0b5341f40
             partitioner:
       staging_loc_a101:
         type: dataframe
-        id: 932787ab-03f6-4f2f-bf47-bd24149a97b3
+        id: 5859555a-0bc6-419f-8f25-bb43b0397d1d
         batch_metadata: {}
         batch_definitions:
           staging_loc_a101_batch:
-            id: 10dd9ea3-c553-40b9-8a5d-55d4701c0f09
+            id: 901e8b37-08e9-4ca6-86da-e7dad7302fba
             partitioner:
       staging_prd_info:
         type: dataframe
-        id: d656e07c-88b6-4b6c-a26e-2c25767e09d2
+        id: c6b86551-7819-4003-a475-c48272f2583a
         batch_metadata: {}
         batch_definitions:
           staging_prd_info_batch:
-            id: b8278078-d162-4c1e-8f3e-20b752c8f89b
+            id: ce1af827-8998-4716-8ffb-f26902ed788b
             partitioner:
       staging_px_cat_g1v2:
         type: dataframe
-        id: 9be118d4-88d3-464c-af56-2592d49852c6
+        id: fe6701a1-8ea9-4c0b-8459-a81563dbf3ad
         batch_metadata: {}
         batch_definitions:
           staging_px_cat_g1v2_batch:
-            id: b8d62d75-e149-4710-90f5-e7ca0ae31840
+            id: 1275ea39-eb2f-4428-a8d4-b1e83541c03f
             partitioner:
       staging_sales_details:
         type: dataframe
-        id: 3584077b-9e66-46b9-90bd-a9cc68e70382
+        id: e8110af0-009d-4281-8c2c-af9dd249cb11
         batch_metadata: {}
         batch_definitions:
           staging_sales_details_batch:
-            id: faf6af8a-872f-4714-ab2f-14f3ce140153
+            id: 8851b3fe-3ff3-40ec-bcbb-4f33a3ce1efd
             partitioner:
       warehouse_dim_customers:
         type: dataframe
-        id: 30ff23b0-7c32-4a65-ba2d-2a57400148be
+        id: de1de857-dcd2-4759-9e78-927a2aa0bc34
         batch_metadata: {}
         batch_definitions:
           warehouse_dim_customers_batch:
-            id: 14e19a01-0d77-449e-bd70-a4bfe7eb63b5
+            id: b572e62d-7794-446a-976e-0c0de0191da2
             partitioner:
       warehouse_dim_products:
         type: dataframe
-        id: a791135d-e2f9-470f-a289-5f6de14db3ed
+        id: 0714907e-9c6c-48c2-8f37-4c27b9d2207b
         batch_metadata: {}
         batch_definitions:
           warehouse_dim_products_batch:
-            id: 55eb7ba7-a5ec-4712-b878-dcf033fa1a53
+            id: a1209e39-6eeb-4b73-b913-9605def91823
             partitioner:
       warehouse_fact_sales:
         type: dataframe
-        id: 07bc66c9-f2a0-401c-91d0-40ad90ca0ae4
+        id: 72e7ee0e-5695-40b1-8ff3-8aca16627422
         batch_metadata: {}
         batch_definitions:
           warehouse_fact_sales_batch:
-            id: 0333cc87-8ca8-4229-9431-dac774d76561
+            id: abc869ef-f946-4a58-94f5-77247815b4d6
             partitioner:
       analytics_report_customers:
         type: dataframe
-        id: aa272e33-4535-4c58-b6b4-420da094ab71
+        id: ebf909a3-8cc3-4249-a4aa-f195ce1fb3be
         batch_metadata: {}
         batch_definitions:
           analytics_report_customers_batch:
-            id: 4943eb62-1d27-4d68-b4a5-cf2f8e3b3f21
+            id: 86da0785-a786-4444-8c44-064e4085c883
             partitioner:
       analytics_report_products:
         type: dataframe
-        id: fec99171-faed-43ad-8462-bd7d4f751989
+        id: f1d34259-38f0-42fa-b621-0e3a41f78339
         batch_metadata: {}
         batch_definitions:
           analytics_report_products_batch:
-            id: 8fd685f2-3f97-41d6-abd3-2e3b0f6112e0
+            id: 78b0a419-7bc1-4aba-b8c1-d2c6f3bba6c1
             partitioner:
       analytics_report_monthly:
         type: dataframe
-        id: 37ecb544-db36-4b9c-a35d-63c96de8110f
+        id: e20b7e50-bdb1-4043-8d7c-04e1dbf16192
         batch_metadata: {}
         batch_definitions:
           analytics_report_monthly_batch:
-            id: ce9cd24c-f05c-439c-abd5-18c4dbf7b3af
+            id: 14a526e9-f9fe-4da1-8013-7920779eb45c
             partitioner:
       analytics_report_category:
         type: dataframe
-        id: 30cc4d5b-96d2-492a-a247-e672cab3d686
+        id: 6c1bd8ad-1494-4ece-8288-85a63a45e93d
         batch_metadata: {}
         batch_definitions:
           analytics_report_category_batch:
-            id: 109f5ffc-e21b-4974-8f9b-7cc9989db14d
+            id: fa63468a-1bd0-46f9-9f03-24d59a0b3399
+            partitioner:
+      analytics_monthly_snapshot:
+        type: dataframe
+        id: d61c57ac-1f4b-4fb1-9206-9ca1a0db237e
+        batch_metadata: {}
+        batch_definitions:
+          analytics_monthly_snapshot_batch:
+            id: 2f6fd125-0b99-4459-8cd6-3da6085e6251
             partitioner:
 analytics_enabled:
 data_context_id: b9130a93-2b67-4ea7-83fa-a743646f8055

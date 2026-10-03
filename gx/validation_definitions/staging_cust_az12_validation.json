@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "9ca2ecd8-136c-49a4-94c8-ab81e7487873",
+      "id": "25db7669-9705-4070-be91-e52287fc3a26",
       "name": "staging_cust_az12"
     },
     "batch_definition": {
-      "id": "a14f1628-04b0-4747-ae0a-a02310a29891",
+      "id": "400e314a-5256-4410-9cb0-ae2f698058e9",
       "name": "staging_cust_az12_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "82769262-31f5-416c-937e-a474da8de52c",
+  "id": "f69e64a8-612f-4c90-8f4b-fa735fd2ded2",
   "name": "staging_cust_az12_validation",
   "suite": {
-    "id": "26130ad7-6120-45f5-a84e-35eedefe0a61",
+    "id": "68e08ceb-2743-4b88-b69b-70f27ccd8377",
     "name": "staging_cust_az12_suite"
   }
 }

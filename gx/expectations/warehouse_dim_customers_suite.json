@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "dbce95a8-5068-45f7-a42b-104188c1c26e",
+      "id": "713cb038-1df0-4afa-838c-1c7fa0cec757",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "ab3e455c-a516-49b2-85b2-e7b47fa7b20f",
+      "id": "d41c1c9f-fc45-4e14-bc5d-ddc691574c67",
       "kwargs": {
         "column_list": [
           "customer_sk",
@@ -22,7 +22,8 @@
           "gender",
           "birthdate",
           "country",
-          "create_date"
+          "create_date",
+          "updated_at"
         ]
       },
       "meta": {},
@@ -30,7 +31,25 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "76e19f9a-80ab-4400-84d2-3ca9bb43fb1d",
+      "id": "66ada03f-784e-4f42-a6b4-85e9818c053e",
+      "kwargs": {
+        "column": "customer_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "0233c23f-140e-4415-bd0c-db80e3502ef1",
+      "kwargs": {
+        "column": "customer_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "abc1f820-5cba-4cf0-ab63-45abef3fea05",
       "kwargs": {
         "column": "customer_key"
       },
@@ -39,7 +58,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "6cef148b-4080-49d5-88d3-9a9b34dcc5fb",
+      "id": "b073af3b-ca41-47b8-a320-e53558f22bfd",
       "kwargs": {
         "column": "customer_key"
       },
@@ -48,7 +67,16 @@
       "type": "expect_column_values_to_be_unique"
     },
     {
-      "id": "6551e1ab-a4b7-4dbe-bdd9-098212695139",
+      "id": "bab2cd99-6f16-42cc-a5d6-fe7cb354c16d",
+      "kwargs": {
+        "column": "updated_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "90536d00-8ef7-415f-85f3-dcd65ffb201a",
       "kwargs": {
         "column": "gender",
         "value_set": [
@@ -60,9 +88,23 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "1d661004-7141-46da-a1df-f58a3e3cd6f2",
+      "kwargs": {
+        "column": "marital_status",
+        "value_set": [
+          "Single",
+          "Married",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "dc5417db-f418-47c4-a376-242ff8d89940",
+  "id": "dd70f94b-b461-407f-8f0a-f58b6fd815e9",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

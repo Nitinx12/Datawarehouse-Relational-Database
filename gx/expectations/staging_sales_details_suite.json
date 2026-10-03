@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "dc8676b4-c587-46d8-90cb-4d05a662638b",
+      "id": "908a2df9-03dd-495d-987d-5d22b465843e",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "00948d01-0067-465a-a308-5d901e052f3e",
+      "id": "e7aa4603-5427-41b5-bdf7-12c6fa4b1957",
       "kwargs": {
         "column_list": [
           "sls_ord_num",
@@ -31,7 +31,7 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "8e43a95c-80f6-43b2-b456-e9d099f346b5",
+      "id": "61639c69-5de4-408b-a502-2c037bbd4f7e",
       "kwargs": {
         "column": "sls_ord_num"
       },
@@ -40,7 +40,34 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "d2666851-c3d9-4cd1-97de-6bec5a4e68d1",
+      "id": "e533fb10-ad53-4db8-bb70-92614183fd89",
+      "kwargs": {
+        "column": "sls_prd_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d80712a5-7363-4ecc-ab2a-229089117f49",
+      "kwargs": {
+        "column": "sls_cust_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "545f09f2-2fdf-461e-8104-13117a8e5498",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "27f24e17-37fc-4920-abb4-32bb144d3542",
       "kwargs": {
         "column": "sls_sales",
         "min_value": 0.0
@@ -50,9 +77,19 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "945ddd97-ef83-442b-abbc-b1a2b0f1ef50",
+      "id": "084fbdb2-a8bd-434a-a24d-894ba8bab152",
       "kwargs": {
         "column": "sls_quantity",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "daa01346-8198-4705-86ea-00106f7d365c",
+      "kwargs": {
+        "column": "sls_price",
         "min_value": 0.0
       },
       "meta": {},
@@ -60,7 +97,7 @@
       "type": "expect_column_values_to_be_between"
     }
   ],
-  "id": "3b656401-0236-41e8-b198-ca534899bd3e",
+  "id": "323c215d-7e6c-4757-8fb5-8eba19200299",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

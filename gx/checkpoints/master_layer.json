@@ -1,0 +1,92 @@
+{
+  "actions": [],
+  "id": "28a305f5-b5af-4721-bd92-f228c839dca3",
+  "name": "master_layer",
+  "result_format": "SUMMARY",
+  "validation_definitions": [
+    {
+      "id": "967ea31a-fed1-45f8-a720-bc77f5593baa",
+      "name": "source_cust_az12_validation"
+    },
+    {
+      "id": "e30ad009-0592-4c22-ae92-ead0ffd4c436",
+      "name": "source_loc_a101_validation"
+    },
+    {
+      "id": "88d57ce3-12e6-4250-8d18-e28b0ba73b91",
+      "name": "source_px_cat_g1v2_validation"
+    },
+    {
+      "id": "2aeb73bb-dbd3-4d01-a7ae-cf1792b53b65",
+      "name": "source_cust_info_validation"
+    },
+    {
+      "id": "0f1fa477-ed78-42ae-91ed-edebcef0a03a",
+      "name": "source_etl_logs_validation"
+    },
+    {
+      "id": "d3110aa7-5879-4460-a1f5-5ba3cdfcc735",
+      "name": "source_prd_info_validation"
+    },
+    {
+      "id": "9a72eecb-af3b-4a56-a2b5-9aa0bb915a8e",
+      "name": "source_sales_details_validation"
+    },
+    {
+      "id": "f69e64a8-612f-4c90-8f4b-fa735fd2ded2",
+      "name": "staging_cust_az12_validation"
+    },
+    {
+      "id": "648f3e3b-3008-434e-b555-8d19d2c730bd",
+      "name": "staging_cust_info_validation"
+    },
+    {
+      "id": "5a81c11a-dada-4d4f-99de-6469eedfec2a",
+      "name": "staging_loc_a101_validation"
+    },
+    {
+      "id": "9c2ec857-50a6-4f54-9e37-1fd26bf1cbda",
+      "name": "staging_prd_info_validation"
+    },
+    {
+      "id": "8536c12c-0553-4205-aa96-12b16364eb74",
+      "name": "staging_px_cat_g1v2_validation"
+    },
+    {
+      "id": "d5619c06-7513-412c-86cc-d6c56478976c",
+      "name": "staging_sales_details_validation"
+    },
+    {
+      "id": "a3f75ca9-32ce-4aa9-a741-ad4bef3a9437",
+      "name": "warehouse_dim_customers_validation"
+    },
+    {
+      "id": "aae16a87-1b66-4899-a342-0f3db5ab8841",
+      "name": "warehouse_dim_products_validation"
+    },
+    {
+      "id": "84916638-3fe6-4111-a388-43b0e5af991e",
+      "name": "warehouse_fact_sales_validation"
+    },
+    {
+      "id": "e6512f76-66e9-441f-8200-2f36a5ff49e1",
+      "name": "analytics_report_customers_validation"
+    },
+    {
+      "id": "f0883f11-fec3-42f3-b066-62124eb08d37",
+      "name": "analytics_report_products_validation"
+    },
+    {
+      "id": "faf8af7c-8fed-49d3-954c-bac977940db0",
+      "name": "analytics_report_monthly_validation"
+    },
+    {
+      "id": "02a256a2-ba4e-465a-bc4b-965ec22f308c",
+      "name": "analytics_report_category_validation"
+    },
+    {
+      "id": "57ec6f16-7968-491e-81f6-ce6495605662",
+      "name": "analytics_monthly_snapshot_validation"
+    }
+  ]
+}

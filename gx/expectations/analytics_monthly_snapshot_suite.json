@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "7e71b252-8bdc-4788-ac9d-89c33d2d7c3b",
+      "id": "79fcc47a-c385-4df2-907f-b41fbd266a3d",
       "kwargs": {
         "min_value": 1
       },
@@ -10,19 +10,19 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "df2b2f18-e769-49cb-b09e-e5f79c9c1623",
+      "id": "78eeb83a-8313-4e68-8e87-21a43112ca30",
       "kwargs": {
         "column_list": [
-          "category",
-          "subcategory",
-          "product_count",
+          "snapshot_month",
           "order_count",
-          "customer_count",
+          "line_count",
           "total_revenue",
           "total_quantity",
-          "last_sale_date",
+          "customer_count",
+          "product_count",
+          "new_customer_count",
           "avg_order_revenue",
-          "percentage_of_total"
+          "loaded_at"
         ]
       },
       "meta": {},
@@ -30,25 +30,25 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "0afeea4f-9332-45e8-bca8-407876d73445",
+      "id": "88b3b43a-efe4-4fd8-88bd-b33943a97a96",
       "kwargs": {
-        "column": "category"
+        "column": "snapshot_month"
       },
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "968f14dd-aca3-4388-9755-8ff807daee45",
+      "id": "3bddad43-9407-441c-a2cb-e995d3f307d8",
       "kwargs": {
-        "column": "subcategory"
+        "column": "snapshot_month"
       },
       "meta": {},
       "severity": "critical",
-      "type": "expect_column_values_to_not_be_null"
+      "type": "expect_column_values_to_be_unique"
     },
     {
-      "id": "15062023-677b-44b0-97c7-959f15b65046",
+      "id": "968437ca-4adf-4cf3-91fb-3e46ca1c8760",
       "kwargs": {
         "column": "order_count",
         "min_value": 1.0
@@ -58,7 +58,27 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "e9af4b4c-dc55-4fe3-b97f-86ebb76ada1a",
+      "id": "20986764-3a4e-4b14-a42e-328a74996405",
+      "kwargs": {
+        "column": "line_count",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "19762ba9-e8b4-4270-940b-751b5184e602",
+      "kwargs": {
+        "column": "customer_count",
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "de1688be-265d-4894-9f27-23e4d6f82d07",
       "kwargs": {
         "column": "total_revenue",
         "min_value": 0.0
@@ -68,31 +88,19 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "d31e3a44-42ea-4359-8649-52cf6d668adc",
+      "id": "d767be9a-a9f8-4636-8254-845d485f33bc",
       "kwargs": {
-        "column": "avg_order_revenue",
-        "min_value": 0.0
+        "column": "loaded_at"
       },
       "meta": {},
       "severity": "critical",
-      "type": "expect_column_values_to_be_between"
-    },
-    {
-      "id": "6e2f7f1f-2dbf-45fc-85f5-4f8add9938f8",
-      "kwargs": {
-        "column": "percentage_of_total",
-        "max_value": 100.0,
-        "min_value": 0.0
-      },
-      "meta": {},
-      "severity": "critical",
-      "type": "expect_column_values_to_be_between"
+      "type": "expect_column_values_to_not_be_null"
     }
   ],
-  "id": "7042a502-bd5f-4492-9431-c34b62b64a54",
+  "id": "85336291-e96b-45ed-aa29-fac3b79af791",
   "meta": {
     "great_expectations_version": "1.23.2"
   },
-  "name": "analytics_report_category_suite",
+  "name": "analytics_monthly_snapshot_suite",
   "notes": null
 }

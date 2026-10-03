@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "6fd9ae88-123d-4392-9c08-bc1441dcf7fd",
+      "id": "3f9ffbec-a3c5-4f66-b09e-7dd805dc6e62",
       "kwargs": {
         "min_value": 1
       },
@@ -10,13 +10,15 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "01d7bbe7-1ce1-4aab-8e2b-059ac28c53e9",
+      "id": "3461ea7d-d636-4778-8f5e-3b2d6a5d3eaa",
       "kwargs": {
         "column_list": [
           "order_number",
           "product_key",
           "customer_key",
           "order_date",
+          "shipping_date",
+          "due_date",
           "sales_amount",
           "quantity",
           "price"
@@ -27,7 +29,34 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "4fc49a5e-6e99-4e07-8569-c4b0e9b19d5e",
+      "id": "70ec48a0-6bce-4f23-ba5e-9571de68ff1d",
+      "kwargs": {
+        "column": "order_number"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "978a5e51-409b-47f7-a26c-73e2d0153739",
+      "kwargs": {
+        "column": "product_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "7d6c81ba-ee04-4846-8d4d-d612cf2806f3",
+      "kwargs": {
+        "column": "customer_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "c447ab3e-f431-4259-955b-6e03b478c3c3",
       "kwargs": {
         "column": "sales_amount",
         "min_value": 0.0
@@ -37,17 +66,17 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "22bbfe25-1e14-47dc-99b5-eb326c0847fe",
+      "id": "b7d060e1-d1f9-4bae-8a6f-8de52ce1a881",
       "kwargs": {
         "column": "quantity",
-        "min_value": 0.0
+        "min_value": 1.0
       },
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "57ea6724-5a1f-49ee-aa7e-5acc8f06b4d4",
+      "id": "75e6d4e4-a3a1-4c87-884b-85527f1cc271",
       "kwargs": {
         "column": "price",
         "min_value": 0.0
@@ -57,7 +86,7 @@
       "type": "expect_column_values_to_be_between"
     }
   ],
-  "id": "2188eaca-d95b-4d4f-b1cb-3ac84244a8fb",
+  "id": "7e085a48-3c59-4f83-bc3a-694e2c29486a",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

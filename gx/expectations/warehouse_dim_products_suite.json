@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "d62570f1-dce7-4b78-aa5c-7568a239f0c9",
+      "id": "a632a770-a263-495e-a153-0dcd7f8d69c6",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "904e9377-ef81-40ac-a698-656a6fe3165b",
+      "id": "08934f87-1275-480e-b01c-b65014138dd0",
       "kwargs": {
         "column_list": [
           "product_sk",
@@ -24,7 +24,8 @@
           "cost",
           "product_line",
           "start_date",
-          "end_date"
+          "end_date",
+          "updated_at"
         ]
       },
       "meta": {},
@@ -32,7 +33,25 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "a8a717f5-a335-4c2a-8a01-d58188b96e76",
+      "id": "a2a50318-1d86-4c66-b1d7-f6fc82f7400a",
+      "kwargs": {
+        "column": "product_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "4b473cdd-905c-4a0e-8241-8108d3aaf1b2",
+      "kwargs": {
+        "column": "product_sk"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "a7ec9338-0d59-404f-ab7d-c248f9b4b1d6",
       "kwargs": {
         "column": "product_id"
       },
@@ -41,7 +60,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "7eddd227-021c-406f-ab56-99f33818167f",
+      "id": "00c2a386-d4f4-443d-8886-9ca91e01b566",
       "kwargs": {
         "column": "product_id"
       },
@@ -50,7 +69,25 @@
       "type": "expect_column_values_to_be_unique"
     },
     {
-      "id": "4672b995-818c-42d0-a13d-03eea77cbc33",
+      "id": "c5694c51-1d36-4da5-903d-bca32e8464f0",
+      "kwargs": {
+        "column": "product_number"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "56c2b9be-2b12-4aaa-972a-a276a9c54dae",
+      "kwargs": {
+        "column": "updated_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "5ad9e2c2-66a3-4b0f-bfc8-51a769c8b18d",
       "kwargs": {
         "column": "cost",
         "min_value": 0.0
@@ -58,9 +95,25 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "d7f06055-35d1-4cfc-92f2-aa3808674e7a",
+      "kwargs": {
+        "column": "product_line",
+        "value_set": [
+          "Mountain",
+          "Road",
+          "Other Sales",
+          "Touring",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "51961dab-14bb-4101-8331-edfd4fd5220d",
+  "id": "823b0290-b25b-4b38-afce-e207bb300cf0",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

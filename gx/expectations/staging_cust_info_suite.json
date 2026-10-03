@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "27811284-e971-43a1-a2a5-2e9f03363bd6",
+      "id": "56d3cd53-0b30-4f95-8fdc-3ecdf28401a2",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "a2843727-ef7b-404c-bc45-aad311a24d26",
+      "id": "1444dd44-04b0-4385-a2d9-e290501ed683",
       "kwargs": {
         "column_list": [
           "cst_id",
@@ -29,16 +29,71 @@
       "type": "expect_table_columns_to_match_ordered_list"
     },
     {
-      "id": "4375a5d6-6196-4ed3-85af-229ec9db18ac",
+      "id": "a7519e4c-af15-4797-8d3a-fd747c523e21",
       "kwargs": {
         "column": "cst_id"
       },
       "meta": {},
       "severity": "critical",
       "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "fe218ce6-6eb7-4d9a-9bb8-a51878971b98",
+      "kwargs": {
+        "column": "cst_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "7a6ee41e-70a3-4b9d-bc9e-7d1f41f81e05",
+      "kwargs": {
+        "column": "cst_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "6cffc6bb-2db1-4b67-a691-b793cf36c4ac",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "672cc9e7-fea6-4bf6-a4b4-de8c3a2d36dd",
+      "kwargs": {
+        "column": "cst_marital_status",
+        "value_set": [
+          "Single",
+          "Married",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "177b86e0-057c-4977-be20-8f3c1a6acc8f",
+      "kwargs": {
+        "column": "cst_gndr",
+        "value_set": [
+          "Female",
+          "Male",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "154f7ec4-0857-4a5b-8338-2b021a653e35",
+  "id": "dc4ebae3-ada7-4afa-8b25-ee2661cb820e",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "f7d429af-e109-466e-b302-fbbc87ed1171",
+      "id": "26254289-9005-4b7c-a538-898009fa5f21",
       "name": "source_etl_logs"
     },
     "batch_definition": {
-      "id": "fef34ca9-b700-4b13-841f-b935c2f5467c",
+      "id": "995bcffc-59bd-4733-a25a-6ff3fc01d620",
       "name": "source_etl_logs_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "ecac0599-f65a-4c6e-b10d-db0bf2e6f740",
+  "id": "0f1fa477-ed78-42ae-91ed-edebcef0a03a",
   "name": "source_etl_logs_validation",
   "suite": {
-    "id": "38d069d7-248e-4c47-8432-3f1b6ba6a842",
+    "id": "70bc1d4e-fe20-4d66-8161-4d0779b789b8",
     "name": "source_etl_logs_suite"
   }
 }

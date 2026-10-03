@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "fec99171-faed-43ad-8462-bd7d4f751989",
+      "id": "f1d34259-38f0-42fa-b621-0e3a41f78339",
       "name": "analytics_report_products"
     },
     "batch_definition": {
-      "id": "8fd685f2-3f97-41d6-abd3-2e3b0f6112e0",
+      "id": "78b0a419-7bc1-4aba-b8c1-d2c6f3bba6c1",
       "name": "analytics_report_products_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "af558eb2-64f2-4016-81b0-8a18b4fea62e",
+  "id": "f0883f11-fec3-42f3-b066-62124eb08d37",
   "name": "analytics_report_products_validation",
   "suite": {
-    "id": "ab9c9cc3-c613-46a6-87a2-8c412edee55e",
+    "id": "d0ed8aec-d710-4e71-b260-d851ce756446",
     "name": "analytics_report_products_suite"
   }
 }

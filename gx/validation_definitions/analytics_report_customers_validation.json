@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "aa272e33-4535-4c58-b6b4-420da094ab71",
+      "id": "ebf909a3-8cc3-4249-a4aa-f195ce1fb3be",
       "name": "analytics_report_customers"
     },
     "batch_definition": {
-      "id": "4943eb62-1d27-4d68-b4a5-cf2f8e3b3f21",
+      "id": "86da0785-a786-4444-8c44-064e4085c883",
       "name": "analytics_report_customers_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "e8c8d725-ae9b-40a4-a79c-3cdf55652ada",
+  "id": "e6512f76-66e9-441f-8200-2f36a5ff49e1",
   "name": "analytics_report_customers_validation",
   "suite": {
-    "id": "b79a10b0-c419-4ee7-bcb7-a653e89ce8c5",
+    "id": "f2988037-26b6-4914-943a-e623dff88566",
     "name": "analytics_report_customers_suite"
   }
 }

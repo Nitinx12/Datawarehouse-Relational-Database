@@ -1,5 +1,4 @@
-"""Rebuilds the GX file project: one checkpoint per layer, one validation per table."""
-
+# rebuilds the GX file project with per-layer gates plus a master gate
 import shutil
 from pathlib import Path
 
@@ -17,6 +16,7 @@ PROJECT_DIR = Path(__file__).resolve().parents[1]
 GX_DIR = PROJECT_DIR / "gx"
 DATASOURCE_NAME = "warehouse_frames"
 LAYERS = ["source", "staging", "warehouse", "analytics"]
+MASTER_CHECKPOINT = "master_layer"
 GENERATED_OBJECT_DIRECTORIES = (
     "checkpoints",
     "expectations",
@@ -24,7 +24,7 @@ GENERATED_OBJECT_DIRECTORIES = (
 )
 
 
-# structural gate shared by every table: rows exist and columns match exactly
+# structural gate shared by every table
 def shaped(columns: list[str]) -> list:
     return [
         ExpectTableRowCountToBeBetween(min_value=1),
@@ -32,7 +32,22 @@ def shaped(columns: list[str]) -> list:
     ]
 
 
-# source tables: structural gates over raw landed frames
+# not-null gate for one merge or business key
+def not_null(column: str) -> ExpectColumnValuesToNotBeNull:
+    return ExpectColumnValuesToNotBeNull(column=column)
+
+
+# uniqueness gate for one merge or business key
+def unique(column: str) -> ExpectColumnValuesToBeUnique:
+    return ExpectColumnValuesToBeUnique(column=column)
+
+
+# non-negative measure gate shared by money and quantity columns
+def non_negative(column: str) -> ExpectColumnValuesToBeBetween:
+    return ExpectColumnValuesToBeBetween(column=column, min_value=0)
+
+
+# source tables with key presence and raw range guards
 def source_specs() -> dict[str, dict]:
     return {
         "source_cust_az12": {
@@ -41,13 +56,23 @@ def source_specs() -> dict[str, dict]:
             "columns": ["bdate", "cid", "gen", "updated_at", "id", "_loaded_at"],
             "expectations": shaped(
                 ["bdate", "cid", "gen", "updated_at", "id", "_loaded_at"]
-            ),
+            )
+            + [
+                not_null("cid"),
+                not_null("id"),
+                not_null("_loaded_at"),
+            ],
         },
         "source_loc_a101": {
             "layer": "source",
             "query": 'SELECT "CID" AS cid, "CNTRY" AS cntry, updated_at, id, _loaded_at FROM source."LOC_A101"',
             "columns": ["cid", "cntry", "updated_at", "id", "_loaded_at"],
-            "expectations": shaped(["cid", "cntry", "updated_at", "id", "_loaded_at"]),
+            "expectations": shaped(["cid", "cntry", "updated_at", "id", "_loaded_at"])
+            + [
+                not_null("cid"),
+                not_null("id"),
+                not_null("_loaded_at"),
+            ],
         },
         "source_px_cat_g1v2": {
             "layer": "source",
@@ -62,7 +87,13 @@ def source_specs() -> dict[str, dict]:
             ],
             "expectations": shaped(
                 ["cat", "id", "maintenance", "subcat", "updated_at", "_loaded_at"]
-            ),
+            )
+            + [
+                not_null("id"),
+                not_null("cat"),
+                not_null("subcat"),
+                not_null("_loaded_at"),
+            ],
         },
         "source_cust_info": {
             "layer": "source",
@@ -90,7 +121,12 @@ def source_specs() -> dict[str, dict]:
                     "updated_at",
                     "_loaded_at",
                 ]
-            ),
+            )
+            + [
+                ExpectColumnValuesToNotBeNull(column="cst_id", mostly=0.999),
+                not_null("cst_key"),
+                not_null("_loaded_at"),
+            ],
         },
         "source_etl_logs": {
             "layer": "source",
@@ -144,7 +180,15 @@ def source_specs() -> dict[str, dict]:
                     "validation_status",
                     "validation_detail",
                 ]
-            ),
+            )
+            + [
+                not_null("job_name"),
+                not_null("status"),
+                not_null("started_at"),
+                non_negative("rows_extracted"),
+                non_negative("rows_loaded"),
+                non_negative("duration_seconds"),
+            ],
         },
         "source_prd_info": {
             "layer": "source",
@@ -172,7 +216,12 @@ def source_specs() -> dict[str, dict]:
                     "updated_at",
                     "_loaded_at",
                 ]
-            ),
+            )
+            + [
+                not_null("prd_id"),
+                not_null("prd_key"),
+                not_null("_loaded_at"),
+            ],
         },
         "source_sales_details": {
             "layer": "source",
@@ -204,12 +253,18 @@ def source_specs() -> dict[str, dict]:
                     "updated_at",
                     "_loaded_at",
                 ]
-            ),
+            )
+            + [
+                not_null("sls_ord_num"),
+                not_null("sls_prd_key"),
+                not_null("sls_cust_id"),
+                not_null("_loaded_at"),
+            ],
         },
     }
 
 
-# staging tables: structural gates plus load-guaranteed value checks
+# staging tables with key, domain, measure, and timestamp guards
 def staging_specs() -> dict[str, dict]:
     return {
         "staging_cust_az12": {
@@ -218,7 +273,15 @@ def staging_specs() -> dict[str, dict]:
             "columns": ["cid", "birthdate", "gender", "updated_at", "loaded_at"],
             "expectations": shaped(
                 ["cid", "birthdate", "gender", "updated_at", "loaded_at"]
-            ),
+            )
+            + [
+                not_null("cid"),
+                unique("cid"),
+                not_null("loaded_at"),
+                ExpectColumnValuesToBeInSet(
+                    column="gender", value_set=["Male", "Female", "n/a"]
+                ),
+            ],
         },
         "staging_cust_info": {
             "layer": "staging",
@@ -247,13 +310,44 @@ def staging_specs() -> dict[str, dict]:
                     "loaded_at",
                 ]
             )
-            + [ExpectColumnValuesToNotBeNull(column="cst_id")],
+            + [
+                not_null("cst_id"),
+                unique("cst_id"),
+                not_null("cst_key"),
+                not_null("loaded_at"),
+                ExpectColumnValuesToBeInSet(
+                    column="cst_marital_status",
+                    value_set=["Single", "Married", "n/a"],
+                ),
+                ExpectColumnValuesToBeInSet(
+                    column="cst_gndr", value_set=["Female", "Male", "n/a"]
+                ),
+            ],
         },
         "staging_loc_a101": {
             "layer": "staging",
             "query": "SELECT cid, cntry, updated_at, loaded_at FROM staging.loc_a101",
             "columns": ["cid", "cntry", "updated_at", "loaded_at"],
-            "expectations": shaped(["cid", "cntry", "updated_at", "loaded_at"]),
+            "expectations": shaped(["cid", "cntry", "updated_at", "loaded_at"])
+            + [
+                not_null("cid"),
+                unique("cid"),
+                not_null("cntry"),
+                not_null("loaded_at"),
+                ExpectColumnValuesToBeInSet(
+                    column="cntry",
+                    value_set=[
+                        "United States",
+                        "United Kingdom",
+                        "Germany",
+                        "France",
+                        "Canada",
+                        "Australia",
+                        '{"$numberDouble": "NaN"}',
+                        "n/a",
+                    ],
+                ),
+            ],
         },
         "staging_prd_info": {
             "layer": "staging",
@@ -283,7 +377,18 @@ def staging_specs() -> dict[str, dict]:
                     "loaded_at",
                     "cat_id",
                 ]
-            ),
+            )
+            + [
+                not_null("prd_id"),
+                unique("prd_id"),
+                not_null("prd_key"),
+                not_null("loaded_at"),
+                non_negative("prd_cost"),
+                ExpectColumnValuesToBeInSet(
+                    column="prd_line",
+                    value_set=["Mountain", "Road", "Other Sales", "Touring", "n/a"],
+                ),
+            ],
         },
         "staging_px_cat_g1v2": {
             "layer": "staging",
@@ -298,7 +403,14 @@ def staging_specs() -> dict[str, dict]:
             ],
             "expectations": shaped(
                 ["id", "cat", "subcat", "maintenance", "updated_at", "loaded_at"]
-            ),
+            )
+            + [
+                not_null("id"),
+                unique("id"),
+                not_null("cat"),
+                not_null("subcat"),
+                not_null("loaded_at"),
+            ],
         },
         "staging_sales_details": {
             "layer": "staging",
@@ -332,20 +444,24 @@ def staging_specs() -> dict[str, dict]:
                 ]
             )
             + [
-                ExpectColumnValuesToNotBeNull(column="sls_ord_num"),
-                ExpectColumnValuesToBeBetween(column="sls_sales", min_value=0),
-                ExpectColumnValuesToBeBetween(column="sls_quantity", min_value=0),
+                not_null("sls_ord_num"),
+                not_null("sls_prd_key"),
+                not_null("sls_cust_id"),
+                not_null("loaded_at"),
+                non_negative("sls_sales"),
+                ExpectColumnValuesToBeBetween(column="sls_quantity", min_value=1),
+                non_negative("sls_price"),
             ],
         },
     }
 
 
-# warehouse dimensions and fact with key and measure checks
+# warehouse dimensions and fact with key, domain, and measure checks
 def warehouse_specs() -> dict[str, dict]:
     return {
         "warehouse_dim_customers": {
             "layer": "warehouse",
-            "query": "SELECT customer_sk, customer_key, cst_id, first_name, last_name, marital_status, gender, birthdate, country, create_date FROM warehouse.dim_customers",
+            "query": "SELECT customer_sk, customer_key, cst_id, first_name, last_name, marital_status, gender, birthdate, country, create_date, updated_at FROM warehouse.dim_customers",
             "columns": [
                 "customer_sk",
                 "customer_key",
@@ -357,6 +473,7 @@ def warehouse_specs() -> dict[str, dict]:
                 "birthdate",
                 "country",
                 "create_date",
+                "updated_at",
             ],
             "expectations": shaped(
                 [
@@ -370,19 +487,27 @@ def warehouse_specs() -> dict[str, dict]:
                     "birthdate",
                     "country",
                     "create_date",
+                    "updated_at",
                 ]
             )
             + [
-                ExpectColumnValuesToNotBeNull(column="customer_key"),
-                ExpectColumnValuesToBeUnique(column="customer_key"),
+                not_null("customer_sk"),
+                unique("customer_sk"),
+                not_null("customer_key"),
+                unique("customer_key"),
+                not_null("updated_at"),
                 ExpectColumnValuesToBeInSet(
                     column="gender", value_set=["Female", "Male", "n/a"]
+                ),
+                ExpectColumnValuesToBeInSet(
+                    column="marital_status",
+                    value_set=["Single", "Married", "n/a"],
                 ),
             ],
         },
         "warehouse_dim_products": {
             "layer": "warehouse",
-            "query": "SELECT product_sk, product_id, product_number, product_name, category_id, category, subcategory, maintenance, cost, product_line, start_date, end_date FROM warehouse.dim_products",
+            "query": "SELECT product_sk, product_id, product_number, product_name, category_id, category, subcategory, maintenance, cost, product_line, start_date, end_date, updated_at FROM warehouse.dim_products",
             "columns": [
                 "product_sk",
                 "product_id",
@@ -396,6 +521,7 @@ def warehouse_specs() -> dict[str, dict]:
                 "product_line",
                 "start_date",
                 "end_date",
+                "updated_at",
             ],
             "expectations": shaped(
                 [
@@ -411,22 +537,33 @@ def warehouse_specs() -> dict[str, dict]:
                     "product_line",
                     "start_date",
                     "end_date",
+                    "updated_at",
                 ]
             )
             + [
-                ExpectColumnValuesToNotBeNull(column="product_id"),
-                ExpectColumnValuesToBeUnique(column="product_id"),
-                ExpectColumnValuesToBeBetween(column="cost", min_value=0),
+                not_null("product_sk"),
+                unique("product_sk"),
+                not_null("product_id"),
+                unique("product_id"),
+                not_null("product_number"),
+                not_null("updated_at"),
+                non_negative("cost"),
+                ExpectColumnValuesToBeInSet(
+                    column="product_line",
+                    value_set=["Mountain", "Road", "Other Sales", "Touring", "n/a"],
+                ),
             ],
         },
         "warehouse_fact_sales": {
             "layer": "warehouse",
-            "query": "SELECT order_number, product_key, customer_key, order_date, sales_amount, quantity, price FROM warehouse.fact_sales",
+            "query": "SELECT order_number, product_key, customer_key, order_date, shipping_date, due_date, sales_amount, quantity, price FROM warehouse.fact_sales",
             "columns": [
                 "order_number",
                 "product_key",
                 "customer_key",
                 "order_date",
+                "shipping_date",
+                "due_date",
                 "sales_amount",
                 "quantity",
                 "price",
@@ -437,37 +574,46 @@ def warehouse_specs() -> dict[str, dict]:
                     "product_key",
                     "customer_key",
                     "order_date",
+                    "shipping_date",
+                    "due_date",
                     "sales_amount",
                     "quantity",
                     "price",
                 ]
             )
             + [
-                ExpectColumnValuesToBeBetween(column="sales_amount", min_value=0),
-                ExpectColumnValuesToBeBetween(column="quantity", min_value=0),
-                ExpectColumnValuesToBeBetween(column="price", min_value=0),
+                not_null("order_number"),
+                not_null("product_key"),
+                not_null("customer_key"),
+                non_negative("sales_amount"),
+                ExpectColumnValuesToBeBetween(column="quantity", min_value=1),
+                non_negative("price"),
             ],
         },
     }
 
 
-# analytics reports with segment and KPI checks
+# analytics marts with segment, KPI, and share checks
 def analytics_specs() -> dict[str, dict]:
     return {
         "analytics_report_customers": {
             "layer": "analytics",
-            "query": "SELECT customer_sk, customer_key, age, age_group, customer_segment, total_orders, total_sales, total_quantity, total_products, lifespan_months, recency_months, avg_order_value, avg_monthly_spend FROM analytics.report_customers",
+            "query": "SELECT customer_sk, customer_key, cst_id, customer_name, birthdate, age, last_order_date, total_orders, total_sales, total_quantity, total_products, lifespan_months, age_group, customer_segment, recency_months, avg_order_value, avg_monthly_spend FROM analytics.report_customers",
             "columns": [
                 "customer_sk",
                 "customer_key",
+                "cst_id",
+                "customer_name",
+                "birthdate",
                 "age",
-                "age_group",
-                "customer_segment",
+                "last_order_date",
                 "total_orders",
                 "total_sales",
                 "total_quantity",
                 "total_products",
                 "lifespan_months",
+                "age_group",
+                "customer_segment",
                 "recency_months",
                 "avg_order_value",
                 "avg_monthly_spend",
@@ -476,105 +622,217 @@ def analytics_specs() -> dict[str, dict]:
                 [
                     "customer_sk",
                     "customer_key",
+                    "cst_id",
+                    "customer_name",
+                    "birthdate",
                     "age",
-                    "age_group",
-                    "customer_segment",
+                    "last_order_date",
                     "total_orders",
                     "total_sales",
                     "total_quantity",
                     "total_products",
                     "lifespan_months",
+                    "age_group",
+                    "customer_segment",
                     "recency_months",
                     "avg_order_value",
                     "avg_monthly_spend",
                 ]
             )
             + [
+                not_null("customer_sk"),
+                unique("customer_sk"),
+                not_null("customer_key"),
                 ExpectColumnValuesToBeInSet(
                     column="customer_segment", value_set=["VIP", "Regular", "New"]
                 ),
+                ExpectColumnValuesToBeInSet(
+                    column="age_group",
+                    value_set=["Under 20", "20-29", "30-39", "40-49", "50 and above"],
+                ),
                 ExpectColumnValuesToBeBetween(column="total_orders", min_value=1),
-                ExpectColumnValuesToBeBetween(column="lifespan_months", min_value=0),
-                ExpectColumnValuesToBeBetween(column="recency_months", min_value=0),
+                non_negative("total_sales"),
+                non_negative("lifespan_months"),
+                non_negative("recency_months"),
+                non_negative("avg_order_value"),
+                non_negative("avg_monthly_spend"),
             ],
         },
         "analytics_report_products": {
             "layer": "analytics",
-            "query": "SELECT product_sk, product_number, total_orders, total_sales, total_quantity, total_customers, avg_order_revenue, avg_monthly_revenue, product_segment, lifespan_months FROM analytics.report_products",
+            "query": "SELECT product_sk, product_number, product_name, category, subcategory, cost, last_sale_date, lifespan_months, total_orders, total_sales, total_quantity, total_customers, avg_selling_price, product_segment, recency_months, avg_order_revenue, avg_monthly_revenue FROM analytics.report_products",
             "columns": [
                 "product_sk",
                 "product_number",
+                "product_name",
+                "category",
+                "subcategory",
+                "cost",
+                "last_sale_date",
+                "lifespan_months",
                 "total_orders",
                 "total_sales",
                 "total_quantity",
                 "total_customers",
+                "avg_selling_price",
+                "product_segment",
+                "recency_months",
                 "avg_order_revenue",
                 "avg_monthly_revenue",
-                "product_segment",
-                "lifespan_months",
             ],
             "expectations": shaped(
                 [
                     "product_sk",
                     "product_number",
+                    "product_name",
+                    "category",
+                    "subcategory",
+                    "cost",
+                    "last_sale_date",
+                    "lifespan_months",
                     "total_orders",
                     "total_sales",
                     "total_quantity",
                     "total_customers",
+                    "avg_selling_price",
+                    "product_segment",
+                    "recency_months",
                     "avg_order_revenue",
                     "avg_monthly_revenue",
-                    "product_segment",
-                    "lifespan_months",
                 ]
             )
             + [
+                not_null("product_sk"),
+                unique("product_sk"),
+                not_null("product_number"),
                 ExpectColumnValuesToBeInSet(
                     column="product_segment",
                     value_set=["High-Performer", "Mid-Range", "Low-Performer"],
                 ),
                 ExpectColumnValuesToBeBetween(column="total_orders", min_value=1),
+                non_negative("total_sales"),
+                ExpectColumnValuesToBeBetween(column="total_customers", min_value=1),
+                non_negative("lifespan_months"),
+                non_negative("avg_order_revenue"),
+                non_negative("avg_monthly_revenue"),
             ],
         },
         "analytics_report_monthly": {
             "layer": "analytics",
-            "query": "SELECT order_month, order_count, customer_count, new_customer_count, total_revenue FROM analytics.report_sales_monthly",
+            "query": "SELECT order_month, line_count, order_count, customer_count, product_count, total_revenue, total_quantity, new_customer_count, avg_order_revenue FROM analytics.report_sales_monthly",
             "columns": [
                 "order_month",
+                "line_count",
                 "order_count",
                 "customer_count",
-                "new_customer_count",
+                "product_count",
                 "total_revenue",
+                "total_quantity",
+                "new_customer_count",
+                "avg_order_revenue",
             ],
             "expectations": shaped(
                 [
                     "order_month",
+                    "line_count",
                     "order_count",
                     "customer_count",
-                    "new_customer_count",
+                    "product_count",
                     "total_revenue",
+                    "total_quantity",
+                    "new_customer_count",
+                    "avg_order_revenue",
                 ]
             )
             + [
+                not_null("order_month"),
+                unique("order_month"),
+                ExpectColumnValuesToBeBetween(column="order_count", min_value=1),
+                ExpectColumnValuesToBeBetween(column="line_count", min_value=1),
                 ExpectColumnValuesToBeBetween(column="customer_count", min_value=1),
-                ExpectColumnValuesToBeBetween(column="total_revenue", min_value=0),
+                ExpectColumnValuesToBeBetween(column="product_count", min_value=1),
+                non_negative("total_revenue"),
+                non_negative("new_customer_count"),
+                non_negative("avg_order_revenue"),
             ],
         },
         "analytics_report_category": {
             "layer": "analytics",
-            "query": "SELECT category, subcategory, total_revenue, percentage_of_total FROM analytics.report_category_sales",
+            "query": "SELECT category, subcategory, product_count, order_count, customer_count, total_revenue, total_quantity, last_sale_date, avg_order_revenue, percentage_of_total FROM analytics.report_category_sales",
             "columns": [
                 "category",
                 "subcategory",
+                "product_count",
+                "order_count",
+                "customer_count",
                 "total_revenue",
+                "total_quantity",
+                "last_sale_date",
+                "avg_order_revenue",
                 "percentage_of_total",
             ],
             "expectations": shaped(
-                ["category", "subcategory", "total_revenue", "percentage_of_total"]
+                [
+                    "category",
+                    "subcategory",
+                    "product_count",
+                    "order_count",
+                    "customer_count",
+                    "total_revenue",
+                    "total_quantity",
+                    "last_sale_date",
+                    "avg_order_revenue",
+                    "percentage_of_total",
+                ]
             )
             + [
+                not_null("category"),
+                not_null("subcategory"),
+                ExpectColumnValuesToBeBetween(column="order_count", min_value=1),
+                non_negative("total_revenue"),
+                non_negative("avg_order_revenue"),
                 ExpectColumnValuesToBeBetween(
                     column="percentage_of_total", min_value=0, max_value=100
-                )
+                ),
+            ],
+        },
+        "analytics_monthly_snapshot": {
+            "layer": "analytics",
+            "query": "SELECT snapshot_month, order_count, line_count, total_revenue, total_quantity, customer_count, product_count, new_customer_count, avg_order_revenue, loaded_at FROM analytics.monthly_kpi_snapshot",
+            "columns": [
+                "snapshot_month",
+                "order_count",
+                "line_count",
+                "total_revenue",
+                "total_quantity",
+                "customer_count",
+                "product_count",
+                "new_customer_count",
+                "avg_order_revenue",
+                "loaded_at",
+            ],
+            "expectations": shaped(
+                [
+                    "snapshot_month",
+                    "order_count",
+                    "line_count",
+                    "total_revenue",
+                    "total_quantity",
+                    "customer_count",
+                    "product_count",
+                    "new_customer_count",
+                    "avg_order_revenue",
+                    "loaded_at",
+                ]
+            )
+            + [
+                not_null("snapshot_month"),
+                unique("snapshot_month"),
+                ExpectColumnValuesToBeBetween(column="order_count", min_value=1),
+                ExpectColumnValuesToBeBetween(column="line_count", min_value=1),
+                ExpectColumnValuesToBeBetween(column="customer_count", min_value=1),
+                non_negative("total_revenue"),
+                not_null("loaded_at"),
             ],
         },
     }
@@ -588,6 +846,11 @@ def table_specs() -> dict[str, dict]:
         **warehouse_specs(),
         **analytics_specs(),
     }
+
+
+# tables belonging to one layer in spec order
+def layer_tables(specs: dict[str, dict], layer: str) -> list[str]:
+    return [name for name, spec in specs.items() if spec["layer"] == layer]
 
 
 # removes GX objects that are regenerated from the table specs
@@ -622,16 +885,25 @@ def build() -> None:
     for layer in LAYERS:
         layer_validations = [
             context.validation_definitions.get(f"{name}_validation")
-            for name, spec in specs.items()
-            if spec["layer"] == layer
+            for name in layer_tables(specs, layer)
         ]
         checkpoint = gx.Checkpoint(
             name=f"{layer}_layer",
             validation_definitions=layer_validations,
         )
         context.checkpoints.add(checkpoint)
+    master_validations = [
+        context.validation_definitions.get(f"{name}_validation") for name in specs
+    ]
+    context.checkpoints.add(
+        gx.Checkpoint(
+            name=MASTER_CHECKPOINT,
+            validation_definitions=master_validations,
+        )
+    )
     print(
-        f"gx project ready: {len(specs)} validations in {len(LAYERS)} layer checkpoints"
+        f"gx project ready: {len(specs)} validations in "
+        f"{len(LAYERS)} layer checkpoints plus {MASTER_CHECKPOINT}"
     )
 
 

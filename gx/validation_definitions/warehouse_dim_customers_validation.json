@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "30ff23b0-7c32-4a65-ba2d-2a57400148be",
+      "id": "de1de857-dcd2-4759-9e78-927a2aa0bc34",
       "name": "warehouse_dim_customers"
     },
     "batch_definition": {
-      "id": "14e19a01-0d77-449e-bd70-a4bfe7eb63b5",
+      "id": "b572e62d-7794-446a-976e-0c0de0191da2",
       "name": "warehouse_dim_customers_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "90f291e2-2dd7-4e8c-b59f-9ba354f95f25",
+  "id": "a3f75ca9-32ce-4aa9-a741-ad4bef3a9437",
   "name": "warehouse_dim_customers_validation",
   "suite": {
-    "id": "dc5417db-f418-47c4-a376-242ff8d89940",
+    "id": "dd70f94b-b461-407f-8f0a-f58b6fd815e9",
     "name": "warehouse_dim_customers_suite"
   }
 }

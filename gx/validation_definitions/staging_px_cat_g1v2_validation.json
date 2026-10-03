@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "9be118d4-88d3-464c-af56-2592d49852c6",
+      "id": "fe6701a1-8ea9-4c0b-8459-a81563dbf3ad",
       "name": "staging_px_cat_g1v2"
     },
     "batch_definition": {
-      "id": "b8d62d75-e149-4710-90f5-e7ca0ae31840",
+      "id": "1275ea39-eb2f-4428-a8d4-b1e83541c03f",
       "name": "staging_px_cat_g1v2_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "31a75544-b878-4a5a-8d49-ed7c19c10253",
+  "id": "8536c12c-0553-4205-aa96-12b16364eb74",
   "name": "staging_px_cat_g1v2_validation",
   "suite": {
-    "id": "9cf554b2-31c6-4e5b-91f3-08cbe13549de",
+    "id": "cee13eea-409c-4c5e-858b-2dfec8eb1833",
     "name": "staging_px_cat_g1v2_suite"
   }
 }

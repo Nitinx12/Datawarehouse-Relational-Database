@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "d61c57ac-1f4b-4fb1-9206-9ca1a0db237e",
+      "name": "analytics_monthly_snapshot"
+    },
+    "batch_definition": {
+      "id": "2f6fd125-0b99-4459-8cd6-3da6085e6251",
+      "name": "analytics_monthly_snapshot_batch"
+    },
+    "datasource": {
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
+      "name": "warehouse_frames"
+    }
+  },
+  "id": "57ec6f16-7968-491e-81f6-ce6495605662",
+  "name": "analytics_monthly_snapshot_validation",
+  "suite": {
+    "id": "85336291-e96b-45ed-aa29-fac3b79af791",
+    "name": "analytics_monthly_snapshot_suite"
+  }
+}

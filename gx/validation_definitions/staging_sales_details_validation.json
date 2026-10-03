@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "3584077b-9e66-46b9-90bd-a9cc68e70382",
+      "id": "e8110af0-009d-4281-8c2c-af9dd249cb11",
       "name": "staging_sales_details"
     },
     "batch_definition": {
-      "id": "faf6af8a-872f-4714-ab2f-14f3ce140153",
+      "id": "8851b3fe-3ff3-40ec-bcbb-4f33a3ce1efd",
       "name": "staging_sales_details_batch"
     },
     "datasource": {
-      "id": "83dbcf3e-1402-4473-ac86-7127b55736c7",
+      "id": "f7edb3ca-f217-4176-9559-996db58dfcaf",
       "name": "warehouse_frames"
     }
   },
-  "id": "f96b4221-0e98-4bdc-a36b-3d6712aa8d79",
+  "id": "d5619c06-7513-412c-86cc-d6c56478976c",
   "name": "staging_sales_details_validation",
   "suite": {
-    "id": "3b656401-0236-41e8-b198-ca534899bd3e",
+    "id": "323c215d-7e6c-4757-8fb5-8eba19200299",
     "name": "staging_sales_details_suite"
   }
 }

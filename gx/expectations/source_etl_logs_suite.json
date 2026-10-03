@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "a026c2b5-58cf-4d9f-9a2b-3e721dd2c81b",
+      "id": "33dad5c9-9d4d-4458-99c2-83b0ea3b7e14",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "f3efb620-6d6d-4ab2-906c-ebefbf0ad655",
+      "id": "01cf35d4-f43b-45bb-84e7-67e81c0488f5",
       "kwargs": {
         "column_list": [
           "id",
@@ -40,9 +40,66 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "b51206fc-b603-4965-b258-7fbe3ab52db5",
+      "kwargs": {
+        "column": "job_name"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "587b293b-ad22-4b4c-9519-4b0f109d798f",
+      "kwargs": {
+        "column": "status"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "4b64ff4e-9182-427d-9d4e-53320422aed3",
+      "kwargs": {
+        "column": "started_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "ed0eb4ef-6b4e-4fa5-aec1-0c212c62c159",
+      "kwargs": {
+        "column": "rows_extracted",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "a1196266-7149-4ebc-a196-968ac7ebfd19",
+      "kwargs": {
+        "column": "rows_loaded",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "de2ee87d-554b-4e9b-95b4-9af7cc1d302f",
+      "kwargs": {
+        "column": "duration_seconds",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
     }
   ],
-  "id": "38d069d7-248e-4c47-8432-3f1b6ba6a842",
+  "id": "70bc1d4e-fe20-4d66-8161-4d0779b789b8",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

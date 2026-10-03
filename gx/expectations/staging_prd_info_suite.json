@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "8d257f2b-5f2a-44a3-9af9-95739dc8e98e",
+      "id": "b5a8b0b7-579f-4729-8dd1-7f4ec162d5f0",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "4f8366c0-1ff9-4d90-882c-80ace19db4a0",
+      "id": "d15a3aaa-6312-4f9c-9e38-15d43d008779",
       "kwargs": {
         "column_list": [
           "prd_id",
@@ -28,9 +28,71 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "17b5559d-9f04-4cf6-aee6-0a4411e66190",
+      "kwargs": {
+        "column": "prd_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "a1bd7a0c-4bf3-48cd-bfa7-01f4e24c47d5",
+      "kwargs": {
+        "column": "prd_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "b1c9b303-194d-44be-a42c-161b9853bd79",
+      "kwargs": {
+        "column": "prd_key"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "e25d26a0-5281-4146-86aa-7186715c6bf8",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "3658c9ba-d6f0-4c95-ae88-5aac3e0b8454",
+      "kwargs": {
+        "column": "prd_cost",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "bec080c2-ba0e-4d7d-bb34-3918e93c5c54",
+      "kwargs": {
+        "column": "prd_line",
+        "value_set": [
+          "Mountain",
+          "Road",
+          "Other Sales",
+          "Touring",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "3f66b58a-b54a-45ec-a12c-273b61a0b45b",
+  "id": "1004b74f-76cd-4903-b028-a268fe5c402d",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

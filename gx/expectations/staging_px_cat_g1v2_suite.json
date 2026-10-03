@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "d863dd80-1b1a-49c4-acf0-99814a3e4680",
+      "id": "9e1e879e-fca6-42c5-adeb-eb89dff1f81c",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "b25439eb-60ab-431b-bd48-b38babe5f478",
+      "id": "49721122-7584-462d-8e4a-b20cb368902d",
       "kwargs": {
         "column_list": [
           "id",
@@ -24,9 +24,54 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "8e68e03e-6f66-44dc-8083-c035f760644e",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "79bd8747-558b-4de1-ad71-aa62aeba13d3",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "c5f2713c-1053-4da9-978e-e89e7e680917",
+      "kwargs": {
+        "column": "cat"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "79065668-e8eb-46c5-82d6-f6212eb5362a",
+      "kwargs": {
+        "column": "subcat"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "9e87037f-a7a3-418f-bdbe-27764499ce79",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
     }
   ],
-  "id": "9cf554b2-31c6-4e5b-91f3-08cbe13549de",
+  "id": "cee13eea-409c-4c5e-858b-2dfec8eb1833",
   "meta": {
     "great_expectations_version": "1.23.2"
   },

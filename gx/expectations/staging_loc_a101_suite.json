@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "e32478fa-da7e-44db-a3ad-3b70ceb84e57",
+      "id": "26f058f9-7717-4dce-b2d3-5b0fae185887",
       "kwargs": {
         "min_value": 1
       },
@@ -10,7 +10,7 @@
       "type": "expect_table_row_count_to_be_between"
     },
     {
-      "id": "abc18b82-c8ee-4b51-aeef-51f4870a69f7",
+      "id": "fc8131ec-1f0e-46f8-806a-650387db61b5",
       "kwargs": {
         "column_list": [
           "cid",
@@ -22,9 +22,64 @@
       "meta": {},
       "severity": "critical",
       "type": "expect_table_columns_to_match_ordered_list"
+    },
+    {
+      "id": "38558c4b-a54f-4ab5-8c07-92f5195ac14d",
+      "kwargs": {
+        "column": "cid"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "305daf17-ded1-4554-a5a7-d5c94adbd81e",
+      "kwargs": {
+        "column": "cid"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "93ef683f-ef10-43fb-9b83-2d0c8b287581",
+      "kwargs": {
+        "column": "cntry"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "2fec3d43-9347-4adc-902a-fb0cd9a3e584",
+      "kwargs": {
+        "column": "loaded_at"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "f0539170-aba1-435e-9f7f-f8848bba9171",
+      "kwargs": {
+        "column": "cntry",
+        "value_set": [
+          "United States",
+          "United Kingdom",
+          "Germany",
+          "France",
+          "Canada",
+          "Australia",
+          "{\"$numberDouble\": \"NaN\"}",
+          "n/a"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
     }
   ],
-  "id": "b848b8a4-5ecd-4fa6-ac73-eeb16d7ca897",
+  "id": "f8b4de0c-db41-487f-97b3-932c78eb7276",
   "meta": {
     "great_expectations_version": "1.23.2"
   },
