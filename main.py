@@ -17,6 +17,16 @@ if str(ROOT / "scripts") not in sys.path:
 
 from run_staging_load import call_procedure
 
+from src.utils.logger import get_logger
+from src.utils.tracking import (
+    RUN_ID,
+    SNAPSHOT_STAGES,
+    record_snapshot,
+    stage_metrics,
+    track_stage,
+)
+
+logger = get_logger(__name__)
 console = Console()
 
 STAGES = [
@@ -242,21 +252,39 @@ def main() -> int:
     results: list[dict] = []
     for stage in stages:
         console.print(f"[bold]stage: {stage}[/bold]")
-        for row in run_stage(stage):
-            results.append(row)
-            state = (
-                "[green]ok[/green]" if row["status"] == "SUCCESS" else "[red]FAIL[/red]"
-            )
-            console.print(
-                f"  {row['name']} {state} ({row['seconds']}s) {row['detail']}"
-            )
+        logger.info("stage started: %s run_id=%s", stage, RUN_ID)
+        with track_stage(stage) as metrics:
+            stage_rows = run_stage(stage)
+            for row in stage_rows:
+                results.append(row)
+                state = (
+                    "[green]ok[/green]"
+                    if row["status"] == "SUCCESS"
+                    else "[red]FAIL[/red]"
+                )
+                logger.info(
+                    "stage=%s step=%s status=%s seconds=%s %s",
+                    stage,
+                    row["name"],
+                    row["status"],
+                    row["seconds"],
+                    row["detail"],
+                )
+                console.print(
+                    f"  {row['name']} {state} ({row['seconds']}s) {row['detail']}"
+                )
+            metrics.update(stage_metrics(stage, stage_rows))
         if any(row["status"] != "SUCCESS" for row in results):
             break
+        if stage in SNAPSHOT_STAGES:
+            record_snapshot()
     elapsed = (datetime.now(UTC) - started).total_seconds()
     print_summary(results, elapsed)
     failed = [row["name"] for row in results if row["status"] != "SUCCESS"]
     if failed:
+        logger.error("pipeline FAILED at: %s", ", ".join(failed))
         raise SystemExit(f"pipeline FAILED at: {', '.join(failed)}")
+    logger.info("pipeline SUCCESS elapsed=%.1fs steps=%d", elapsed, len(results))
     console.print("[green]pipeline SUCCESS[/green]")
     return 0
 

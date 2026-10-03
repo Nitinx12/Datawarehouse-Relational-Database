@@ -48,6 +48,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./sql/00_init_schema.sql:/docker-entrypoint-initdb.d/00_init_schema.sql:ro
       - ./sql/01_source_etl_logs.sql:/docker-entrypoint-initdb.d/01_source_etl_logs.sql:ro
+      - ./sql/02_ops_monitoring.sql:/docker-entrypoint-initdb.d/02_ops_monitoring.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
