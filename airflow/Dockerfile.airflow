@@ -1,0 +1,28 @@
+# Production Airflow image: scheduler/webserver with Java + Spark for the extract jobs.
+# Build: docker compose build airflow-scheduler
+FROM apache/airflow:2.10.5-python3.11
+
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+ARG SPARK_VERSION=3.5.3
+RUN curl -fsSL "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.tgz" -o /tmp/spark.tgz \
+    && tar -xzf /tmp/spark.tgz -C /opt \
+    && mv "/opt/spark-${SPARK_VERSION}-bin-hadoop3" /opt/spark \
+    && rm /tmp/spark.tgz
+
+ENV SPARK_HOME=/opt/spark
+ENV PATH=/opt/spark/bin:$PATH
+
+USER airflow
+COPY airflow/requirements.txt /requirements.txt
+RUN pip install --no-cache-dir --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt" -r /requirements.txt
+
+COPY --chown=airflow:root . /opt/warehouse
+ENV PYTHONPATH=/opt/warehouse
+WORKDIR /opt/warehouse

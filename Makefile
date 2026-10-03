@@ -3,6 +3,7 @@ PY = .venv/Scripts/python.exe
 .PHONY: help pipeline no-extract extract source-tests staging staging-tests
 .PHONY: warehouse warehouse-tests analytics analytics-tests master test gx gx-build lint format
 .PHONY: dashboard dashboard-install
+.PHONY: infra-up infra-down infra-logs airflow-trigger
 
 help:
 	@echo "pipeline         full extract-to-master run (main.py)"
@@ -15,6 +16,10 @@ help:
 	@echo "lint format      ruff check / format"
 	@echo "dashboard-install install dashboard deps into .venv"
 	@echo "dashboard          run the Streamlit dashboard"
+	@echo "infra-up           build + start postgres, mongo, airflow, dashboard"
+	@echo "infra-down         stop the stack (keeps volumes)"
+	@echo "infra-logs         follow stack logs"
+	@echo "airflow-trigger    trigger one warehouse_daily run"
 
 pipeline:
 	$(PY) main.py
@@ -59,13 +64,25 @@ gx-build:
 	$(PY) scripts/setup_gx_project.py
 
 lint:
-	$(PY) -m ruff check main.py scripts tests dashboard
+	$(PY) -m ruff check main.py scripts tests dashboard airflow/dags
 
 format:
-	$(PY) -m ruff format main.py scripts tests dashboard
+	$(PY) -m ruff format main.py scripts tests dashboard airflow/dags
 
 dashboard-install:
 	uv pip install --python $(PY) -r dashboard/requirements.txt
 
 dashboard:
 	$(PY) -m streamlit run dashboard/home.py
+
+infra-up:
+	docker compose up -d --build
+
+infra-down:
+	docker compose down
+
+infra-logs:
+	docker compose logs -f
+
+airflow-trigger:
+	docker compose exec airflow-scheduler airflow dags trigger warehouse_daily

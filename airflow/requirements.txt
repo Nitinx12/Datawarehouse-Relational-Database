@@ -1,0 +1,12 @@
+# Runtime deps for main.py, scripts/, and src/jobs inside the Airflow image.
+# apache-airflow itself comes from the base image; install with its constraints file.
+pandas>=2.0,<3
+psycopg[binary]>=3.1
+pymongo>=4.0
+databricks-sql-connector>=3.0
+pyspark>=3.5,<3.6
+delta-spark>=3.0,<4
+python-dotenv>=1.0
+pyarrow>=25.0.1
+rich>=13.0
+great-expectations>=1.23.2

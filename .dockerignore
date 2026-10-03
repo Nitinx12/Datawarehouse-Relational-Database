@@ -1,0 +1,13 @@
+.venv/
+.venv_old/
+venv/
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+gx/uncommitted/
+reports/charts/
+airflow/logs/
+*.log
+.env
