@@ -1,0 +1,417 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Row counts per source table over time",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    captured_at AS time,\n    layer || '.' || table_name AS metric,\n    row_count AS value\nFROM ops.table_snapshot\nWHERE $__timeFilter(captured_at)\n    AND layer = 'source'\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Source rows over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Extract job duration per run",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    stage AS metric,\n    duration_s AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND stage IN ('extract_mongo', 'extract_databricks')\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Extract duration per job",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Inserted plus updated rows of the latest staging run",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    'rows_out' AS metric,\n    rows_out AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND stage = 'staging'\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Staging rows moved per run",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Rejected over input rows of the latest staging run",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    'reject_ratio' AS metric,\n    rows_rejected::NUMERIC / NULLIF(rows_in, 0) AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND stage = 'staging'\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Staging reject ratio",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Dims and fact counts over time",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    captured_at AS time,\n    layer || '.' || table_name AS metric,\n    row_count AS value\nFROM ops.table_snapshot\nWHERE $__timeFilter(captured_at)\n    AND layer = 'warehouse'\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Warehouse counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Orphan keys of the latest warehouse run",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n    COALESCE((detail ->> 'orphan_products')::INT, 0)\n    + COALESCE((detail ->> 'orphan_customers')::INT, 0) AS orphans\nFROM ops.pipeline_run_log\nWHERE stage = 'warehouse'\nORDER BY started_at DESC\nLIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Warehouse orphans",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Staging sales versus fact rows of the latest run",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n    MAX(row_count) FILTER (WHERE layer = 'staging' AND table_name = 'sales_details') AS staging_rows,\n    MAX(row_count) FILTER (WHERE layer = 'warehouse' AND table_name = 'fact_sales') AS fact_rows\nFROM ops.table_snapshot\nWHERE run_id = (\n    SELECT run_id\n    FROM ops.pipeline_run_log\n    ORDER BY started_at DESC\n    LIMIT 1\n);",
+          "refId": "A"
+        }
+      ],
+      "title": "Staging vs fact reconciliation",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Months present in the KPI snapshot",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    captured_at AS time,\n    layer || '.' || table_name AS metric,\n    row_count AS value\nFROM ops.table_snapshot\nWHERE $__timeFilter(captured_at)\n    AND layer = 'analytics'\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Analytics months over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "DQ and GX failures per layer over time",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    stage || ' dq_failed' AS metric,\n    COALESCE((detail ->> 'dq_failed')::INT, 0) AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND detail ->> 'dq_failed' IS NOT NULL\nORDER BY 1;",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    stage || ' gx_failed' AS metric,\n    COALESCE((detail ->> 'gx_failed')::INT, 0) AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND detail ->> 'gx_failed' IS NOT NULL\nORDER BY 1;",
+          "refId": "B"
+        }
+      ],
+      "title": "DQ and GX failures",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 41,
+  "tags": [
+    "warehouse",
+    "layers"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Layer Health",
+  "uid": "layer-health",
+  "version": 1,
+  "weekStart": ""
+}

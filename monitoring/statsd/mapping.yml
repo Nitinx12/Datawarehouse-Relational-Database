@@ -1,0 +1,23 @@
+mappings:
+  - match: "airflow.dagrun.duration.*.*"
+    name: "airflow_dagrun_duration"
+    labels:
+      status: "$1"
+      dag_id: "$2"
+
+  - match: "airflow.dagrun.schedule_delay.*"
+    name: "airflow_dagrun_schedule_delay"
+    labels:
+      dag_id: "$1"
+
+  - match_type: regex
+    match: "^airflow\\.operator_failures_(.+)$"
+    name: "airflow_operator_failures"
+    labels:
+      operator: "$1"
+
+  - match_type: regex
+    match: "^airflow\\.operator_successes_(.+)$"
+    name: "airflow_operator_successes"
+    labels:
+      operator: "$1"

@@ -1,0 +1,550 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: warehouse-data
+    folder: Warehouse
+    interval: 15m
+    rules:
+      - uid: wh-overdue
+        title: Pipeline overdue
+        condition: C
+        for: 0m
+        noDataState: Alerting
+        execErrState: Error
+        annotations:
+          summary: Pipeline overdue, no successful master run in the expected window.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                SELECT
+                    EXTRACT(EPOCH FROM (NOW() - MAX(started_at))) / 3600
+                    - CASE
+                        WHEN EXTRACT(ISODOW FROM NOW() AT TIME ZONE 'Asia/Kolkata') IN (2, 3, 4, 5) THEN 25
+                        ELSE 73
+                    END AS hours_overdue
+                FROM ops.pipeline_run_log
+                WHERE stage = 'master'
+                    AND status = 'SUCCESS';
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0
+
+      - uid: wh-source-shrink
+        title: Source shrink
+        condition: C
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Source shrink, a source table dropped over 20 percent versus the previous run.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                WITH ranked AS (
+                    SELECT
+                        table_name,
+                        row_count,
+                        LAG(row_count) OVER (PARTITION BY table_name ORDER BY captured_at) AS prev_count,
+                        ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY captured_at DESC) AS rn
+                    FROM ops.table_snapshot
+                    WHERE layer = 'source'
+                )
+                SELECT
+                    COALESCE(MAX((prev_count - row_count)::NUMERIC / NULLIF(prev_count, 0)), 0) AS max_drop_ratio
+                FROM ranked
+                WHERE rn = 1;
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0.2
+
+      - uid: wh-reject-ratio
+        title: Staging reject ratio high
+        condition: C
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Staging reject ratio high, check source null keys, then the extract that fed it.
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                SELECT
+                    rows_rejected::NUMERIC / NULLIF(rows_in, 0) AS reject_ratio
+                FROM ops.pipeline_run_log
+                WHERE stage = 'staging'
+                ORDER BY started_at DESC
+                LIMIT 1;
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0.01
+
+      - uid: wh-zero-delta
+        title: Staging zero-delta streak
+        condition: C
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Staging moved zero rows three runs in a row.
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 604800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                SELECT
+                    COUNT(*) AS zero_runs
+                FROM (
+                    SELECT rows_out
+                    FROM ops.pipeline_run_log
+                    WHERE stage = 'staging'
+                        AND status = 'SUCCESS'
+                    ORDER BY started_at DESC
+                    LIMIT 3
+                ) AS last_three
+                WHERE rows_out = 0;
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 2
+
+      - uid: wh-orphans
+        title: Warehouse orphans
+        condition: C
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Warehouse orphans, fact_sales has broken dimension keys.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                SELECT
+                    COALESCE((detail ->> 'orphan_products')::INT, 0)
+                    + COALESCE((detail ->> 'orphan_customers')::INT, 0) AS orphans
+                FROM ops.pipeline_run_log
+                WHERE stage = 'warehouse'
+                ORDER BY started_at DESC
+                LIMIT 1;
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0
+
+      - uid: wh-reconcile
+        title: Warehouse reconciliation mismatch
+        condition: D
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Reconciliation mismatch, staging sales rows differ from fact_sales.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                SELECT
+                    MAX(row_count) AS staging_rows
+                FROM ops.table_snapshot
+                WHERE layer = 'staging'
+                    AND table_name = 'sales_details';
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B2
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: B2
+              format: table
+              rawSql: |
+                SELECT
+                    MAX(row_count) AS fact_rows
+                FROM ops.table_snapshot
+                WHERE layer = 'warehouse'
+                    AND table_name = 'fact_sales';
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: math
+              expression: $A - $B2
+          - refId: D
+            datasourceUid: __expr__
+            model:
+              refId: D
+              type: threshold
+              expression: $C
+              conditions:
+                - evaluator:
+                    type: outside_range
+                    params:
+                      - 0
+                      - 0
+
+      - uid: wh-warehouse-shrink
+        title: Warehouse shrink
+        condition: C
+        for: 0m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Warehouse shrink, a dim or fact table lost rows.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: warehouse
+            relativeTimeRange:
+              from: 172800
+              to: 0
+            model:
+              refId: A
+              format: table
+              rawSql: |
+                WITH ranked AS (
+                    SELECT
+                        table_name,
+                        row_count,
+                        LAG(row_count) OVER (PARTITION BY table_name ORDER BY captured_at) AS prev_count,
+                        ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY captured_at DESC) AS rn
+                    FROM ops.table_snapshot
+                    WHERE layer = 'warehouse'
+                )
+                SELECT
+                    COALESCE(MAX((prev_count - row_count)::NUMERIC / NULLIF(prev_count, 0)), 0) AS max_drop_ratio
+                FROM ranked
+                WHERE rn = 1;
+              datasource:
+                type: postgres
+                uid: warehouse
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0
+
+  - orgId: 1
+    name: warehouse-infra
+    folder: Warehouse
+    interval: 5m
+    rules:
+      - uid: wh-target-down
+        title: Target down
+        condition: C
+        for: 2m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: A Prometheus target is down.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              refId: A
+              expr: up == 0
+              datasource:
+                type: prometheus
+                uid: prometheus
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0
+
+      - uid: wh-heartbeat
+        title: Scheduler heartbeat stalled
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Airflow scheduler heartbeat stalled.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            model:
+              refId: A
+              expr: increase(airflow_scheduler_heartbeat[5m])
+              datasource:
+                type: prometheus
+                uid: prometheus
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: lt
+                    params:
+                      - 1
+
+      - uid: wh-import-errors
+        title: DAG import errors
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Airflow DAG import errors present.
+        labels:
+          severity: critical
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            model:
+              refId: A
+              expr: airflow_dag_processing_import_errors
+              datasource:
+                type: prometheus
+                uid: prometheus
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0
+
+      - uid: wh-pg-conns
+        title: Postgres connections high
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        annotations:
+          summary: Postgres connection usage above 80 percent.
+        labels:
+          severity: warning
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            model:
+              refId: A
+              expr: sum(pg_stat_activity_count) / max(pg_settings_max_connections)
+              datasource:
+                type: prometheus
+                uid: prometheus
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: $A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: $B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params:
+                      - 0.8

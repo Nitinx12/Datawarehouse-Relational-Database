@@ -1,0 +1,280 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Latest master stage status",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n    status\nFROM ops.pipeline_run_log\nWHERE stage = 'master'\nORDER BY started_at DESC\nLIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Last run status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Hours since the last successful master stage",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "h"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n    EXTRACT(EPOCH FROM (NOW() - MAX(started_at))) / 3600 AS hours_since_success\nFROM ops.pipeline_run_log\nWHERE stage = 'master'\n    AND status = 'SUCCESS';",
+          "refId": "A"
+        }
+      ],
+      "title": "Hours since last success",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Per-stage duration over time",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    stage AS metric,\n    duration_s AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Stage duration over time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Total pipeline duration per run",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    MIN(started_at) AS time,\n    run_id AS metric,\n    SUM(duration_s) AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\nGROUP BY run_id\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Total run duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "warehouse"
+      },
+      "description": "Stages that needed more than one attempt",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "warehouse"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n    started_at AS time,\n    stage AS metric,\n    attempt AS value\nFROM ops.pipeline_run_log\nWHERE $__timeFilter(started_at)\n    AND attempt > 1\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Retries per run",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Mean DAG run duration from Airflow StatsD",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "airflow_dagrun_duration_sum / airflow_dagrun_duration_count",
+          "legendFormat": "{{dag_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Airflow DAG duration",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 41,
+  "tags": [
+    "warehouse",
+    "pipeline"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Pipeline Overview",
+  "uid": "pipeline-overview",
+  "version": 1,
+  "weekStart": ""
+}

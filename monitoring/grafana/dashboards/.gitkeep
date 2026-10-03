@@ -1,0 +1,2 @@
+Exported Grafana dashboard JSON goes here (Share -> Export in the UI).
+Provisioning in ../provisioning/dashboards loads every file in this folder.
