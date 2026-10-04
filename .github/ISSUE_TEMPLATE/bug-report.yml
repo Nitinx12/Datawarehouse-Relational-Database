@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a broken pipeline stage, DQ/GX failure, or infra issue.
+title: "fix: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Fill in what you can; logs beat prose.
+  - type: input
+    id: stage
+    attributes:
+      label: Failing stage
+      description: e.g. extract, staging-tests, warehouse, analytics, master, dashboard, infra
+      placeholder: staging-tests
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What happened instead? Paste the failing step and error.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant output from main.py, run_all_tests.py, or docker compose logs.
+      render: shell
+  - type: input
+    id: commit
+    attributes:
+      label: Commit / branch
+      placeholder: e.g. main @ abc1234
+    validations:
+      required: false

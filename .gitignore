@@ -155,6 +155,7 @@ __init__.py
 !scripts/__init__.py
 !scripts/python/__init__.py
 !utils/__init__.py
+!dashboard/lib/__init__.py
 .qwen/
 # ==========================
 # Generated Reports / Assets (do not version generated charts)

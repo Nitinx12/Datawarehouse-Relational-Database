@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Runbook
+    url: https://github.com/Nitinx12/Logistic-Relational-Database/blob/main/docs/RUNBOOK.md
+    about: Pipeline recovery and on-call steps.
+  - name: Deployment guide
+    url: https://github.com/Nitinx12/Logistic-Relational-Database/blob/main/docs/DEPLOYMENT.md
+    about: Environment setup and stack deployment.

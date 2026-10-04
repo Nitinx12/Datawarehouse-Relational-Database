@@ -1,0 +1,37 @@
+name: Feature request
+description: Propose a new pipeline stage, mart, check, or dashboard page.
+title: "feat: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep it small and layer-scoped: source, staging, warehouse, analytics, or serving.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: What current gap does this fix?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      placeholder: Target layer, tables/procedures, and quality gates involved.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: Needs a stored procedure change
+        - label: Needs a DQ check
+        - label: Needs a GX validation
+        - label: Needs a dashboard change
+        - label: Needs docs (RUNBOOK / DEPLOYMENT / ARCHITECTURE)
