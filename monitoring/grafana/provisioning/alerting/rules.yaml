@@ -42,14 +42,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -97,14 +97,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -145,14 +145,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -161,6 +161,7 @@ groups:
 
       - uid: wh-zero-delta
         title: Staging zero-delta streak
+        isPaused: true
         condition: C
         for: 0m
         noDataState: OK
@@ -198,14 +199,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -247,14 +248,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -317,7 +318,7 @@ groups:
             model:
               refId: D
               type: threshold
-              expression: $C
+              expression: C
               conditions:
                 - evaluator:
                     type: outside_range
@@ -366,14 +367,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -403,7 +404,7 @@ groups:
               to: 0
             model:
               refId: A
-              expr: up == 0
+              expr: up == bool 0
               datasource:
                 type: prometheus
                 uid: prometheus
@@ -412,14 +413,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -453,14 +454,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: lt
@@ -494,14 +495,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
@@ -535,14 +536,14 @@ groups:
             model:
               refId: B
               type: reduce
-              expression: $A
+              expression: A
               reducer: last
           - refId: C
             datasourceUid: __expr__
             model:
               refId: C
               type: threshold
-              expression: $B
+              expression: B
               conditions:
                 - evaluator:
                     type: gt
