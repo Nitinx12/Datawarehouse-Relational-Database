@@ -1,4 +1,6 @@
-from src.utils.tracking import stage_metrics
+import os
+
+from src.utils.tracking import resolve_run_id, stage_metrics
 
 
 # aggregates load rows into row counts
@@ -37,3 +39,31 @@ def test_stage_metrics_tests() -> None:
     assert metrics["detail"]["dq_failed"] == 0
     assert metrics["detail"]["gx_failed"] == 1
     assert "rows_in" not in metrics
+
+
+# prefers explicit run id over airflow context
+def test_resolve_run_id_prefers_warehouse() -> None:
+    os.environ["WAREHOUSE_RUN_ID"] = "manual__wp1"
+    os.environ["AIRFLOW_CTX_DAG_RUN_ID"] = "airflow__other"
+    try:
+        assert resolve_run_id() == "manual__wp1"
+    finally:
+        os.environ.pop("WAREHOUSE_RUN_ID", None)
+        os.environ.pop("AIRFLOW_CTX_DAG_RUN_ID", None)
+
+
+# aggregates warehouse combined counts into real row metrics
+def test_stage_metrics_warehouse() -> None:
+    rows = [
+        {
+            "name": "warehouse.load_dim_customers",
+            "status": "SUCCESS",
+            "staged": 100,
+            "inserted": 10,
+            "updated": 5,
+            "skipped": 0,
+        }
+    ]
+    metrics = stage_metrics("warehouse", rows)
+    assert metrics["rows_in"] == 100
+    assert metrics["rows_out"] == 15

@@ -171,6 +171,10 @@ def run_load(procedures: list[str], source: str) -> list[dict]:
                 "status": outcome["status"],
                 "seconds": outcome["seconds"],
                 "detail": outcome["error"] or "",
+                "staged": outcome.get("staged", 0),
+                "inserted": outcome.get("inserted", 0),
+                "updated": outcome.get("updated", 0),
+                "skipped": outcome.get("skipped", 0),
             }
         )
         if outcome["status"] != "SUCCESS":

@@ -27,10 +27,14 @@ PROCEDURES = [
     "staging.load_sales_details",
 ]
 
-NOTICE_PATTERN = re.compile(
-    r"staging\.[\w]+: staged=(\d+) inserted=(\d+) updated=(\d+) null-key skipped=(\d+)"
-    r"|staging\.[\w]+: reloaded=(\d+) rows"
+NOTICE_STAGED = re.compile(
+    r"(?:staging|warehouse)\.[\w]+: staged=(\d+) inserted=(\d+) updated=(\d+) null-key skipped=(\d+)"
 )
+NOTICE_COMBINED = re.compile(
+    r"warehouse\.[\w]+: combined=(\d+) inserted=(\d+) updated=(\d+)"
+)
+NOTICE_RELOADED = re.compile(r"(?:staging|warehouse)\.[\w]+: reloaded=(\d+) rows")
+NOTICE_UPSERTED = re.compile(r"analytics\.[\w]+: upserted=(\d+) months")
 
 
 # parses CLI arguments for the staging run
@@ -46,18 +50,31 @@ def parse_args() -> argparse.Namespace:
 
 # extracts staged/inserted/updated counts from a procedure notice
 def parse_notice(notice: str) -> dict:
-    match = NOTICE_PATTERN.search(notice)
-    if not match:
-        return {"staged": 0, "inserted": 0, "updated": 0, "skipped": 0}
-    if match.group(5) is not None:
-        reloaded = int(match.group(5))
+    match = NOTICE_STAGED.search(notice)
+    if match:
+        return {
+            "staged": int(match.group(1)),
+            "inserted": int(match.group(2)),
+            "updated": int(match.group(3)),
+            "skipped": int(match.group(4)),
+        }
+    match = NOTICE_COMBINED.search(notice)
+    if match:
+        return {
+            "staged": int(match.group(1)),
+            "inserted": int(match.group(2)),
+            "updated": int(match.group(3)),
+            "skipped": 0,
+        }
+    match = NOTICE_RELOADED.search(notice)
+    if match:
+        reloaded = int(match.group(1))
         return {"staged": reloaded, "inserted": reloaded, "updated": 0, "skipped": 0}
-    return {
-        "staged": int(match.group(1)),
-        "inserted": int(match.group(2)),
-        "updated": int(match.group(3)),
-        "skipped": int(match.group(4)),
-    }
+    match = NOTICE_UPSERTED.search(notice)
+    if match:
+        upserted = int(match.group(1))
+        return {"staged": upserted, "inserted": upserted, "updated": 0, "skipped": 0}
+    return {"staged": 0, "inserted": 0, "updated": 0, "skipped": 0}
 
 
 # calls one procedure and returns its result row

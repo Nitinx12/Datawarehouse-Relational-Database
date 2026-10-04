@@ -45,6 +45,9 @@ UV_RUN = (
     f"cd {REPO} && UV_PROJECT_ENVIRONMENT=/tmp/warehouse-venv uv run --project {REPO}"
 )
 
+# one run id shared by every task; templated at runtime so uv subprocesses inherit it
+RUN_ENV = {"WAREHOUSE_RUN_ID": "{{ run_id }}"}
+
 # tables shown in the summary email (schema.table)
 SUMMARY_TABLES = [
     "warehouse.dim_customers",
@@ -243,6 +246,7 @@ def stage_task(stage: str, retries: int | None = None) -> BashOperator:
     return BashOperator(
         task_id=stage,
         bash_command=f"{UV_RUN} main.py --only {stage}",
+        env=RUN_ENV,
         execution_timeout=timedelta(hours=1),
         **extra,
     )
@@ -263,6 +267,7 @@ with DAG(
     preflight = BashOperator(
         task_id="preflight",
         bash_command=f"{UV_RUN} scripts/check_sources.py",
+        env=RUN_ENV,
         execution_timeout=timedelta(minutes=10),
         retries=1,
         retry_delay=timedelta(minutes=2),
@@ -272,11 +277,13 @@ with DAG(
         extract_mongo = BashOperator(
             task_id="extract_mongo",
             bash_command=f"{UV_RUN} scripts/run_mongo_job.py",
+            env=RUN_ENV,
             execution_timeout=timedelta(hours=2),
         )
         extract_databricks = BashOperator(
             task_id="extract_databricks",
             bash_command=f"{UV_RUN} scripts/run_databricks_job.py",
+            env=RUN_ENV,
             execution_timeout=timedelta(hours=2),
         )
 

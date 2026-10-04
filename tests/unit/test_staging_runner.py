@@ -27,6 +27,26 @@ def test_parse_notice_garbage_counts_zero():
     }
 
 
+# parses warehouse dimension combined counts
+def test_parse_notice_warehouse_combined():
+    result = parse_notice("warehouse.dim_customers: combined=100 inserted=10 updated=5")
+    assert result == {"staged": 100, "inserted": 10, "updated": 5, "skipped": 0}
+
+
+# parses warehouse fact reload with orphan suffix
+def test_parse_notice_warehouse_reloaded():
+    result = parse_notice(
+        "warehouse.fact_sales: reloaded=500 rows orphan_products=1 orphan_customers=2"
+    )
+    assert result == {"staged": 500, "inserted": 500, "updated": 0, "skipped": 0}
+
+
+# parses analytics snapshot upsert counts
+def test_parse_notice_analytics_upserted():
+    result = parse_notice("analytics.monthly_kpi_snapshot: upserted=12 months")
+    assert result == {"staged": 12, "inserted": 12, "updated": 0, "skipped": 0}
+
+
 def test_procedures_follow_dependency_order():
     assert PROCEDURES.index("staging.load_px_cat_g1v2") < PROCEDURES.index(
         "staging.load_sales_details"

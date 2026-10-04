@@ -10,10 +10,28 @@ from .logger import get_logger
 
 logger = get_logger(__name__)
 
-RUN_ID = os.getenv("AIRFLOW_CTX_DAG_RUN_ID") or (
-    f"local_{datetime.now(UTC):%Y%m%dT%H%M%S}"
-)
-ATTEMPT = int(os.getenv("AIRFLOW_CTX_TRY_NUMBER", "1"))
+
+# resolves one run id shared by every task in a DAG run
+def resolve_run_id() -> str:
+    for candidate in (
+        os.getenv("WAREHOUSE_RUN_ID", "").strip(),
+        os.getenv("AIRFLOW_CTX_DAG_RUN_ID", "").strip(),
+    ):
+        if candidate:
+            return candidate
+    return f"local_{datetime.now(UTC):%Y%m%dT%H%M%S}"
+
+
+# resolves the task retry attempt without failing on bad input
+def resolve_attempt() -> int:
+    try:
+        return int(os.getenv("AIRFLOW_CTX_TRY_NUMBER", "1"))
+    except ValueError:
+        return 1
+
+
+RUN_ID = resolve_run_id()
+ATTEMPT = resolve_attempt()
 
 SNAPSHOT_STAGES = ("extract", "staging", "warehouse", "analytics")
 
@@ -120,13 +138,14 @@ def stage_metrics(stage: str, rows: list[dict]) -> dict:
 
 
 # captures per-table row counts for the current run
-def record_snapshot(run_id: str = RUN_ID) -> None:
+def record_snapshot(run_id: str | None = None) -> None:
+    active_run_id = run_id or RUN_ID
     conn = get_postgres_connection()
     try:
         conn.autocommit = True
-        conn.execute("CALL ops.record_layer_snapshot(%s)", (run_id,))
-        logger.info("snapshot recorded run_id=%s", run_id)
+        conn.execute("CALL ops.record_layer_snapshot(%s)", (active_run_id,))
+        logger.info("snapshot recorded run_id=%s", active_run_id)
     except Exception as exc:  # noqa: BLE001
-        logger.error("snapshot failed run_id=%s error=%s", run_id, exc)
+        logger.error("snapshot failed run_id=%s error=%s", active_run_id, exc)
     finally:
         close_connection(conn)
