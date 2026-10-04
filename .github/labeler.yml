@@ -1,0 +1,52 @@
+python:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.py"
+      - "pyproject.toml"
+      - "uv.lock"
+
+sql:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.sql"
+      - ".sqlfluff"
+
+airflow:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "airflow/**"
+
+dashboard:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "dashboard/**"
+
+docker:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "docker/**"
+      - "docker-compose.yml"
+      - "**/Dockerfile*"
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - ".github/**"
+      - "Makefile"
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.md"
+      - "docs/**"
+
+tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "tests/**"
+      - "gx/validation_definitions/**"
+
+monitoring:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "monitoring/**"
