@@ -1,6 +1,6 @@
 @echo off
 REM Runs the warehouse pipeline: full, one stage, or helpers.
-REM Usage: Batchfile [full ^| no-extract ^| stage ^| test ^| gx ^| gx-build ^| lint ^| dashboard ^| dashboard-install ^| infra-up ^| infra-down ^| infra-logs ^| airflow-trigger ^| help]
+REM Usage: Batchfile [full ^| no-extract ^| stage ^| test ^| unit ^| gx ^| gx-build ^| lint ^| format ^| sql-lint ^| ci ^| health ^| airflow-report ^| docker-report ^| dashboard ^| dashboard-install ^| infra-up ^| infra-down ^| infra-logs ^| airflow-trigger ^| help]
 setlocal
 set ROOT=%~dp0
 set PY=%ROOT%.venv\Scripts\python.exe
@@ -10,9 +10,16 @@ if /I "%~1"=="help" goto help
 if /I "%~1"=="full" goto full
 if /I "%~1"=="no-extract" goto noextract
 if /I "%~1"=="test" goto test
+if /I "%~1"=="unit" goto unit
 if /I "%~1"=="gx" goto gx
 if /I "%~1"=="gx-build" goto gxbuild
 if /I "%~1"=="lint" goto lint
+if /I "%~1"=="format" goto format
+if /I "%~1"=="sql-lint" goto sqllint
+if /I "%~1"=="ci" goto ci
+if /I "%~1"=="health" goto health
+if /I "%~1"=="airflow-report" goto airflowreport
+if /I "%~1"=="docker-report" goto dockerreport
 if /I "%~1"=="dashboard" goto dashboard
 if /I "%~1"=="dashboard-install" goto dashinstall
 if /I "%~1"=="infra-up" goto infraup
@@ -42,7 +49,39 @@ goto end
 goto end
 
 :lint
-"%PY%" -m ruff check "%ROOT%main.py" "%ROOT%scripts" "%ROOT%tests" "%ROOT%dashboard" "%ROOT%airflow\dags"
+"%PY%" -m ruff check "%ROOT%main.py" "%ROOT%scripts" "%ROOT%tests" "%ROOT%dashboard" "%ROOT%airflow\dags" "%ROOT%src"
+goto end
+
+:format
+"%PY%" -m ruff format "%ROOT%main.py" "%ROOT%scripts" "%ROOT%tests" "%ROOT%dashboard" "%ROOT%airflow\dags" "%ROOT%src"
+goto end
+
+:unit
+"%PY%" -m pytest "%ROOT%tests\unit" -q
+goto end
+
+:sqllint
+"%PY%" -m sqlfluff lint "%ROOT%sql" "%ROOT%src\jobs" "%ROOT%tests"
+goto end
+
+:ci
+call "%~f0" lint || exit /b 1
+call "%~f0" unit || exit /b 1
+call "%~f0" sql-lint || exit /b 1
+"%PY%" -m ruff format --check "%ROOT%main.py" "%ROOT%scripts" "%ROOT%tests" "%ROOT%dashboard" "%ROOT%airflow\dags" "%ROOT%src" || exit /b 1
+cd /d "%ROOT%" && docker compose config --quiet || exit /b 1
+goto end
+
+:health
+bash "%ROOT%scripts/pipeline_health.sh"
+goto end
+
+:airflowreport
+bash "%ROOT%scripts/airflow_report.sh"
+goto end
+
+:dockerreport
+bash "%ROOT%scripts/docker_report.sh"
 goto end
 
 :stage
@@ -79,9 +118,16 @@ echo no-extract           full run without Spark extracts
 echo extract source-tests staging staging-tests warehouse warehouse-tests analytics analytics-tests master
 echo                      run one pipeline stage
 echo test                 unit + smoke + dq + gx suites
+echo unit                 fast DB-free unit tests
 echo gx                   run all GX layer and master gates
 echo gx-build             rebuild GX project from specs
-echo lint                 ruff check
+echo lint                 ruff check (incl. src)
+echo format               ruff format (incl. src)
+echo sql-lint            sqlfluff lint sql/ src/jobs/ tests/
+echo ci                  mirror of CI: lint + unit + sql-lint + format check + compose check
+echo health              pipeline health: reachability, rowcounts, freshness, etl logs
+echo airflow-report      master Airflow report (needs Git Bash)
+echo docker-report       master Docker report (needs Git Bash)
 echo dashboard-install   install dashboard deps into .venv
 echo dashboard            run the Streamlit dashboard
 echo infra-up             build + start postgres, mongo, airflow, dashboard

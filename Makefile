@@ -2,6 +2,7 @@ PY = .venv/Scripts/python.exe
 
 .PHONY: help pipeline no-extract extract source-tests staging staging-tests
 .PHONY: warehouse warehouse-tests analytics analytics-tests master test gx gx-build lint format
+.PHONY: unit sql-lint ci health airflow-report docker-report
 .PHONY: dashboard dashboard-install
 .PHONY: infra-up infra-down infra-logs airflow-trigger
 
@@ -11,9 +12,15 @@ help:
 	@echo "extract source-tests staging staging-tests warehouse warehouse-tests analytics analytics-tests master"
 	@echo "                 run one pipeline stage"
 	@echo "test             unit + smoke + dq + gx suites"
+	@echo "unit             fast DB-free unit tests (tests/unit)"
 	@echo "gx               run all GX layer and master gates"
 	@echo "gx-build         rebuild GX project from specs"
-	@echo "lint format      ruff check / format"
+	@echo "lint format      ruff check / format (incl. src/)"
+	@echo "sql-lint         sqlfluff lint sql/ src/jobs/ tests/"
+	@echo "ci               mirror of CI: lint + format check + sql-lint + unit + compose check"
+	@echo "health           pipeline health: reachability, rowcounts, freshness, etl logs"
+	@echo "airflow-report   master Airflow report: services, DAG runs, task states, DB stages"
+	@echo "docker-report    master Docker report: states, resources, errors, disk"
 	@echo "dashboard-install install dashboard deps into .venv"
 	@echo "dashboard          run the Streamlit dashboard"
 	@echo "infra-up           build + start postgres, mongo, airflow, dashboard"
@@ -64,10 +71,29 @@ gx-build:
 	$(PY) scripts/setup_gx_project.py
 
 lint:
-	$(PY) -m ruff check main.py scripts tests dashboard airflow/dags
+	$(PY) -m ruff check main.py scripts tests dashboard airflow/dags src
 
 format:
-	$(PY) -m ruff format main.py scripts tests dashboard airflow/dags
+	$(PY) -m ruff format main.py scripts tests dashboard airflow/dags src
+
+unit:
+	$(PY) -m pytest tests/unit -q
+
+sql-lint:
+	$(PY) -m sqlfluff lint sql/ src/jobs/ tests/
+
+ci: lint unit sql-lint
+	$(PY) -m ruff format --check main.py scripts tests dashboard airflow/dags src
+	docker compose config --quiet
+
+health:
+	bash scripts/pipeline_health.sh
+
+airflow-report:
+	bash scripts/airflow_report.sh
+
+docker-report:
+	bash scripts/docker_report.sh
 
 dashboard-install:
 	uv pip install --python $(PY) -r dashboard/requirements.txt
