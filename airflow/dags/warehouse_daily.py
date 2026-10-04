@@ -39,7 +39,7 @@ ALERT_EMAILS = [e.strip() for e in os.getenv("ALERT_EMAILS", "").split(",") if e
 WAREHOUSE_CONN_ID = os.getenv("WAREHOUSE_CONN_ID", "warehouse_postgres")
 
 # uv resolves the project's locked environment, same as running locally
-UV_RUN = f"cd {REPO} && uv run --project {REPO}"
+UV_RUN = f"cd {REPO} && UV_PROJECT_ENVIRONMENT=/tmp/warehouse-venv uv run --project {REPO}"
 
 # tables shown in the summary email (schema.table)
 SUMMARY_TABLES = [
@@ -257,6 +257,9 @@ with DAG(
             bash_command=f"{UV_RUN} scripts/run_databricks_job.py",
             execution_timeout=timedelta(hours=2),
         )
+
+    # run extracts one after the other: two Spark JVMs in parallel exceeded the Docker memory limit
+    extract_mongo >> extract_databricks
 
     source_tests = stage_task("source-tests", retries=0)
     staging = stage_task("staging")
