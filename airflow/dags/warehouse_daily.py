@@ -45,8 +45,9 @@ UV_RUN = (
     f"cd {REPO} && UV_PROJECT_ENVIRONMENT=/tmp/warehouse-venv uv run --project {REPO}"
 )
 
-# one run id shared by every task; templated at runtime so uv subprocesses inherit it
-RUN_ENV = {"WAREHOUSE_RUN_ID": "{{ run_id }}"}
+# one run id shared by every task; inline assignment keeps the container
+# environment intact (BashOperator env= would replace it, hiding service hosts)
+RUN_ID_PREFIX = 'WAREHOUSE_RUN_ID="{{ run_id }}"'
 
 # tables shown in the summary email (schema.table)
 SUMMARY_TABLES = [
@@ -245,8 +246,7 @@ def stage_task(stage: str, retries: int | None = None) -> BashOperator:
     extra = {} if retries is None else {"retries": retries}
     return BashOperator(
         task_id=stage,
-        bash_command=f"{UV_RUN} main.py --only {stage}",
-        env=RUN_ENV,
+        bash_command=f"{RUN_ID_PREFIX} {UV_RUN} main.py --only {stage}",
         execution_timeout=timedelta(hours=1),
         **extra,
     )
@@ -266,8 +266,7 @@ with DAG(
 ) as dag:
     preflight = BashOperator(
         task_id="preflight",
-        bash_command=f"{UV_RUN} scripts/check_sources.py",
-        env=RUN_ENV,
+        bash_command=f"{RUN_ID_PREFIX} {UV_RUN} scripts/check_sources.py",
         execution_timeout=timedelta(minutes=10),
         retries=1,
         retry_delay=timedelta(minutes=2),
@@ -276,14 +275,12 @@ with DAG(
     with TaskGroup(group_id="extract") as extract:
         extract_mongo = BashOperator(
             task_id="extract_mongo",
-            bash_command=f"{UV_RUN} scripts/run_mongo_job.py",
-            env=RUN_ENV,
+            bash_command=f"{RUN_ID_PREFIX} {UV_RUN} scripts/run_mongo_job.py",
             execution_timeout=timedelta(hours=2),
         )
         extract_databricks = BashOperator(
             task_id="extract_databricks",
-            bash_command=f"{UV_RUN} scripts/run_databricks_job.py",
-            env=RUN_ENV,
+            bash_command=f"{RUN_ID_PREFIX} {UV_RUN} scripts/run_databricks_job.py",
             execution_timeout=timedelta(hours=2),
         )
 
