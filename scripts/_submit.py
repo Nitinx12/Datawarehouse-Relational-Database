@@ -1,3 +1,4 @@
+# submits spark jobs with filtered stderr output
 import os
 import re
 import shutil
@@ -29,10 +30,20 @@ JVM_TZ_OPTION = "-Duser.timezone=UTC"
 
 # locates spark-submit next to the running interpreter, then the repo venv, then PATH
 def find_spark_submit() -> str:
-    names = ("spark-submit.cmd", "spark-submit")
-    interpreter_dir = Path(sys.executable).resolve().parent
-    venv = REPO_ROOT / ".venv"
-    for folder in (interpreter_dir, venv / "Scripts", venv / "bin"):
+    if os.name == "nt":
+        names = ("spark-submit.cmd", "spark-submit")
+        folders = (
+            Path(sys.executable).parent,
+            REPO_ROOT / ".venv" / "Scripts",
+            REPO_ROOT / ".venv" / "bin",
+        )
+    else:
+        names = ("spark-submit",)
+        folders = (
+            Path(sys.executable).parent,
+            REPO_ROOT / ".venv" / "bin",
+        )
+    for folder in folders:
         for name in names:
             candidate = folder / name
             if candidate.exists():
@@ -81,7 +92,7 @@ def submit(job_file: Path, jars: list[str], argv: list[str]) -> int:
     if not job_file.exists():
         raise FileNotFoundError(f"job file not found: {job_file}")
     master = os.getenv("SPARK_MASTER", "local[*]")
-    driver_memory = os.getenv("SPARK_DRIVER_MEMORY", "4g")
+    driver_memory = os.getenv("SPARK_DRIVER_MEMORY", "1g")
     logger.info(
         "submit job=%s master=%s driver_memory=%s", job_file.name, master, driver_memory
     )
