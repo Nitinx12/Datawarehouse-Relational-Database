@@ -37,7 +37,7 @@ jobs:
 
       - name: Docker metadata (airflow)
         id: meta-airflow
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-airflow
           tags: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: Docker metadata (dashboard)
         id: meta-dashboard
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-dashboard
           tags: |
