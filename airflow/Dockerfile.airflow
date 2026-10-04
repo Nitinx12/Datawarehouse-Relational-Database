@@ -1,6 +1,6 @@
 # Production Airflow image: scheduler/webserver with Java + Spark for the extract jobs.
 # Build: docker compose build airflow-scheduler
-FROM apache/airflow:2.10.5-python3.11
+FROM apache/airflow:3.3.2-python3.11
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
