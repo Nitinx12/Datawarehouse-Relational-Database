@@ -14,7 +14,7 @@ SELECT
     key_usage.column_name,
     key_usage.ordinal_position
 FROM information_schema.table_constraints AS constraints
-JOIN information_schema.key_column_usage AS key_usage
+INNER JOIN information_schema.key_column_usage AS key_usage
     ON constraints.constraint_name = key_usage.constraint_name
     AND constraints.table_schema = key_usage.table_schema
 WHERE constraints.table_schema = 'warehouse'
@@ -35,10 +35,10 @@ SELECT
     constraint_refs.column_name AS dimension_column,
     constraints.constraint_name
 FROM information_schema.table_constraints AS constraints
-JOIN information_schema.key_column_usage AS key_usage
+INNER JOIN information_schema.key_column_usage AS key_usage
     ON constraints.constraint_name = key_usage.constraint_name
     AND constraints.table_schema = key_usage.table_schema
-JOIN information_schema.constraint_column_usage AS constraint_refs
+INNER JOIN information_schema.constraint_column_usage AS constraint_refs
     ON constraints.constraint_name = constraint_refs.constraint_name
     AND constraints.table_schema = constraint_refs.table_schema
 WHERE constraints.table_schema = 'warehouse'

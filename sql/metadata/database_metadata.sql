@@ -32,18 +32,18 @@ SELECT
 
 SELECT
     n.nspname AS schema_name,
-    COUNT(*) FILTER (
+    count(*) FILTER (
         WHERE c.relkind IN ('r', 'p')
     ) AS table_count,
-    COUNT(*) FILTER (
+    count(*) FILTER (
         WHERE c.relkind IN ('v', 'm')
     ) AS view_count,
-    COUNT(*) FILTER (
+    count(*) FILTER (
         WHERE c.relkind IN ('r', 'p', 'v', 'm', 'f')
     ) AS total_objects
 FROM pg_catalog.pg_namespace AS n
 LEFT JOIN pg_catalog.pg_class AS c
-    ON c.relnamespace = n.oid
+    ON n.oid = c.relnamespace
     AND c.relkind IN ('r', 'p', 'v', 'm', 'f')
 WHERE n.nspname NOT IN (
     'pg_catalog',

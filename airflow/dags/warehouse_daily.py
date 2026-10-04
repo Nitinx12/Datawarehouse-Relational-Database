@@ -35,11 +35,15 @@ log = logging.getLogger(__name__)
 
 REPO = "/opt/warehouse"
 TIMEZONE = os.getenv("BUSINESS_TIMEZONE", "Asia/Kolkata")
-ALERT_EMAILS = [e.strip() for e in os.getenv("ALERT_EMAILS", "").split(",") if e.strip()]
+ALERT_EMAILS = [
+    e.strip() for e in os.getenv("ALERT_EMAILS", "").split(",") if e.strip()
+]
 WAREHOUSE_CONN_ID = os.getenv("WAREHOUSE_CONN_ID", "warehouse_postgres")
 
 # uv resolves the project's locked environment, same as running locally
-UV_RUN = f"cd {REPO} && UV_PROJECT_ENVIRONMENT=/tmp/warehouse-venv uv run --project {REPO}"
+UV_RUN = (
+    f"cd {REPO} && UV_PROJECT_ENVIRONMENT=/tmp/warehouse-venv uv run --project {REPO}"
+)
 
 # tables shown in the summary email (schema.table)
 SUMMARY_TABLES = [
@@ -89,10 +93,10 @@ def notify_failure(context: dict) -> None:
     log.error("warehouse_daily failed task=%s error=%s", ti.task_id, exception)
     html = f"""
     <div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px">
-      <h2 style="color:{STATE_COLORS['failed']};margin-bottom:4px">Task failed: {escape(ti.task_id)}</h2>
+      <h2 style="color:{STATE_COLORS["failed"]};margin-bottom:4px">Task failed: {escape(ti.task_id)}</h2>
       <table cellpadding="4">
         <tr><td><b>DAG</b></td><td>{escape(ti.dag_id)}</td></tr>
-        <tr><td><b>Run</b></td><td>{escape(context['run_id'])} ({run_date} {TIMEZONE})</td></tr>
+        <tr><td><b>Run</b></td><td>{escape(context["run_id"])} ({run_date} {TIMEZONE})</td></tr>
         <tr><td><b>Attempts</b></td><td>{ti.try_number} of {ti.max_tries + 1}</td></tr>
         <tr><td><b>Duration</b></td><td>{_fmt_duration(ti.duration)}</td></tr>
         <tr><td><b>Error</b></td><td><code>{exception}</code></td></tr>
@@ -112,7 +116,9 @@ def _fetch_row_counts() -> list[tuple[str, int | None]]:
         from airflow.providers.postgres.hooks.postgres import PostgresHook
 
         hook = PostgresHook(postgres_conn_id=WAREHOUSE_CONN_ID)
-        return [(t, hook.get_first(f"SELECT count(*) FROM {t}")[0]) for t in SUMMARY_TABLES]
+        return [
+            (t, hook.get_first(f"SELECT count(*) FROM {t}")[0]) for t in SUMMARY_TABLES
+        ]
     except Exception:
         log.exception("row count lookup failed, continuing without it")
         return []
@@ -127,12 +133,16 @@ def send_summary(**context) -> None:
 
     failed = [t for t in tis if t.state == TaskInstanceState.FAILED]
     blocked = [t for t in tis if t.state == TaskInstanceState.UPSTREAM_FAILED]
-    retried = [t for t in tis if t.try_number > 1 and t.state == TaskInstanceState.SUCCESS]
+    retried = [
+        t for t in tis if t.try_number > 1 and t.state == TaskInstanceState.SUCCESS
+    ]
     ok = not failed and not blocked
 
     start = dag_run.start_date or pendulum.now("UTC")
     wall = (pendulum.now("UTC") - start).total_seconds()
-    run_date = context["logical_date"].in_timezone(TIMEZONE).format("ddd, DD MMM YYYY HH:mm")
+    run_date = (
+        context["logical_date"].in_timezone(TIMEZONE).format("ddd, DD MMM YYYY HH:mm")
+    )
     status = "SUCCESS" if ok else "FAILED"
     color = STATE_COLORS["success" if ok else "failed"]
 
@@ -140,7 +150,11 @@ def send_summary(**context) -> None:
     for t in tis:
         state = str(t.state or "none")
         badge = STATE_COLORS.get(state, "#6e7781")
-        log_cell = f'<a href="{t.log_url}">log</a>' if t.state == TaskInstanceState.FAILED else ""
+        log_cell = (
+            f'<a href="{t.log_url}">log</a>'
+            if t.state == TaskInstanceState.FAILED
+            else ""
+        )
         rows += (
             "<tr>"
             f"<td>{escape(t.task_id)}</td>"
@@ -169,10 +183,18 @@ def send_summary(**context) -> None:
     if failed:
         notes.append("Failed: " + ", ".join(escape(t.task_id) for t in failed))
     if blocked:
-        notes.append("Not run (upstream failed): " + ", ".join(escape(t.task_id) for t in blocked))
+        notes.append(
+            "Not run (upstream failed): "
+            + ", ".join(escape(t.task_id) for t in blocked)
+        )
     if retried:
-        notes.append("Recovered after retry: " + ", ".join(escape(t.task_id) for t in retried))
-    notes_html = "".join(f"<li>{n}</li>" for n in notes) or "<li>No issues. All steps passed on first attempt.</li>"
+        notes.append(
+            "Recovered after retry: " + ", ".join(escape(t.task_id) for t in retried)
+        )
+    notes_html = (
+        "".join(f"<li>{n}</li>" for n in notes)
+        or "<li>No issues. All steps passed on first attempt.</li>"
+    )
 
     html = f"""
     <div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px;color:#1f2328">
@@ -295,5 +317,14 @@ with DAG(
     )
 
     # summary must run even when a middle task dies and everything downstream is upstream_failed
-    [preflight, extract, source_tests, staging, staging_tests, warehouse,
-     warehouse_tests, analytics, analytics_tests] >> summary_email
+    [
+        preflight,
+        extract,
+        source_tests,
+        staging,
+        staging_tests,
+        warehouse,
+        warehouse_tests,
+        analytics,
+        analytics_tests,
+    ] >> summary_email
